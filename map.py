@@ -6,6 +6,10 @@ class Map:
     def __init__(self, width=100, height=32):
         self.width = width
         self.height = height
+        self.cost_wall = 10
+        self.cost_room = 5
+        self.cost_room_wall = 15
+        self.cost_frontier = 100000
         self.map = self.generate_map()
 
     def draw_in_terminal(self):
@@ -17,40 +21,38 @@ class Map:
         print('-' * 150)
 
     def generate_map(self):
-        def draw_in_terminal_dist(dist):
+        def draw_in_terminal_dist():
             print('-' * 150)
             for y in range(len(dist)):
                 for x in range(len(dist[0])):
-                    print(' ' if dist[y][x] == 1 else '$' if dist[y][x] == -1 else '#', end=' ')
+                    print(' ' if dist[y][x] == self.cost_room else '$' if dist[y][x] == self.cost_frontier or dist[y][x] == self.cost_room_wall else '#', end=' ')
                 print()
             print('-' * 150)
 
-        def init_dist(width, height):
-            width_d = width + 2
-            height_d = height + 2
-            dist = [[-1] * width_d if i == 0 or i == height_d - 1 else [-1] + [0] * width + [-1] for i in
-                    range(height_d)]
+        def init_dist():
+            width_d = self.width + 2
+            height_d = self.height + 2
+            dist = [[self.cost_frontier] * width_d if i == 0 or i == height_d - 1
+                    else [self.cost_frontier] + [self.cost_wall] * self.width + [self.cost_frontier] for i in range(height_d)]
             return dist
 
-        def get_all_coord(dist):
+        def get_all_coord():
             coords = []
             for y in range(len(dist)):
                 for x in range(len(dist[0])):
                     coords.append((y, x))
             return coords
 
-        def make_room(distance=1, max_width_rect=8, max_height_rect=8):
+        def make_room(max_width_rect=8, max_height_rect=8):
             count_rect = random.randint(2, 5)
-            room = [[-1] * (max_width_rect * count_rect + 2) if i == 0 or i == (max_height_rect * count_rect + 1) else [-1] +
-                        [0] * max_width_rect * count_rect + [-1] for i in range(max_height_rect * count_rect + 2)]
+            room = [[-1] * (max_width_rect * count_rect + 2) if i == 0 or i == (max_height_rect * count_rect + 1) else
+                    [-1] + [0] * max_width_rect * count_rect + [-1] for i in range(max_height_rect * count_rect + 2)]
             field_room = []
 
-            def make_rectangle(max_width=max_width_rect, max_height=max_height_rect):
-                width = random.randint(3, max_width)
-                height = random.randint(3, max_height)
+            def make_rectangle():
+                width = random.randint(3, max_width_rect)
+                height = random.randint(3, max_height_rect)
 
-                # print("width_rect = ", width)
-                # print("height_rect = ", height)
                 rect = [[1] * width for _ in range(height)]
 
                 return rect
@@ -94,13 +96,13 @@ class Map:
 
             return room, field_room
 
-        def lock_neighbors(dist, x, y):
+        def lock_neighbors(x, y):
             for i in range(len(ddy)):
                 for j in range(len(ddx)):
-                    if dist[y + ddy[i]][x + ddx[j]] == 0:
-                        dist[y + ddy[i]][x + ddx[j]] = -1
+                    if dist[y + ddy[i]][x + ddx[j]] == self.cost_wall:
+                        dist[y + ddy[i]][x + ddx[j]] = self.cost_room_wall
 
-        def paste_room_to_dist(dist, field_dist, coords):
+        def paste_room_to_dist(dist, field_dist):
             new_dist = copy.deepcopy(dist)
             new_field_dist = copy.deepcopy(field_dist)
             lc_field_dist = []
@@ -113,8 +115,9 @@ class Map:
                 for coord in field_room:
                     y = coord[0]
                     x = coord[1]
-                    if y + i < len(dist) and x + j < len(dist[0]) and new_dist[y + i][x + j] != -1:
-                        new_dist[y + i][x + j] = 1
+                    if y + i < len(dist) and x + j < len(dist[0]) and new_dist[y + i][x + j] != self.cost_frontier and \
+                            new_dist[y + i][x + j] != self.cost_room_wall:
+                        new_dist[y + i][x + j] = self.cost_room
                         new_field_dist.append((y + i, x + j))
                         lc_field_dist.append((y + i, x + j))
                     else:
@@ -129,22 +132,21 @@ class Map:
                     dist = copy.deepcopy(new_dist)
                     field_dist = copy.deepcopy(new_field_dist)
 
-            for coord in lc_field_dist:
-                lock_neighbors(dist, coord[1], coord[0])
+            return dist, field_dist, lc_field_dist
 
-            return dist
-
-        dist = init_dist(self.width, self.height)
+        dist = init_dist()
         field_dist = []
-        coords = get_all_coord(dist)
+        coords = get_all_coord()
         ddx = [0, 1, 0, -1]
         ddy = [-1, 0, 1, 0]
 
         count_room = 10
         for _ in range(count_room):
             room, field_room = make_room()
-            dist = paste_room_to_dist(dist, field_dist, coords)
-        draw_in_terminal_dist(dist)
+            dist, field_dist, lc_field_dist = paste_room_to_dist(dist, field_dist)
+            for coord in lc_field_dist:
+                lock_neighbors(coord[1], coord[0])
+        draw_in_terminal_dist()
         # draw_in_terminal_dist(room)
 
 
