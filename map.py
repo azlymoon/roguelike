@@ -75,6 +75,9 @@ class Map:
             print()
         print('-' * 150)
 
+    def get_map(self):
+        return self.map
+
     def generate_map(self):
         def draw_in_terminal_dist():
             print('-' * 150)
@@ -244,6 +247,3 @@ class Map:
                 map[y][x] = (True if dist[y][x] == self.cost_room else False)
 
         return map
-
-
-map = Map()

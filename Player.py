@@ -24,7 +24,8 @@ class Player(pygame.sprite.Sprite):
         self.next_status = 0
 
     def import_assets(self):
-        path = '/Users/User/Desktop/ICT/MIEM/kursach/img/'
+        # path = '/Users/User/Desktop/ICT/MIEM/kursach/img/'
+        path = './img/'
         for animation in self.animations.keys():
             full_path = path + animation
             self.animations[animation] = import_folder(full_path)
