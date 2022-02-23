@@ -39,8 +39,20 @@ while running:
 
     # Рендеринг
     screen.fill(GREY)
+    left = 0
+    top = 0
+    wiph = 20
+    height = 400
+    myImage = pygame.image.load('./img/healthbar/1.png')
+    for i in range(0, player.health):
+        myRect = (left, top, wiph, height)
+        left += wiph
+
+        screen.blit(myImage, myRect)
     all_sprites.draw(screen)
-    # После отрисовки всего, переворачиваем экран
+    if player.health <= 0:
+        myRect = (0, 0, WIDTH, HEIGHT)
+        screen.blit(pygame.image.load('./img/game_over/1.jpg'), myRect)
     pygame.display.flip()
 
 pygame.quit()
