@@ -2,8 +2,8 @@ import pygame
 from Player import Player
 from map import Map
 
-WIDTH = 800
-HEIGHT = 650
+WIDTH = 1280
+HEIGHT = 720
 FPS = 30
 
 # Задаем цвета
@@ -23,6 +23,7 @@ class GameManager:
         self.entities = pygame.sprite.Group()
         self.state = "in_menu"
         self.map = None
+        self.map_surface = pygame.Surface((WIDTH, HEIGHT))
 
     def init_map(self):
         self.map = Map().get_map()
@@ -35,6 +36,15 @@ class GameManager:
 
     def run(self):
         self.init_map()
+
+        # Отрисовка карты в консоль
+        # print('-' * 150)
+        # for y in range(len(self.map)):
+        #     for x in range(len(self.map[0])):
+        #         print(' ' if self.map[y][x] is True else '#', end=' ')
+        #     print()
+        # print('-' * 150)
+
         running = True
         while running:
             # Держим цикл на правильной скорости
@@ -50,6 +60,7 @@ class GameManager:
 
             # Рендеринг
             self.screen.fill(GREY)
+            # self.screen.blit()
             self.entities.draw(self.screen)
             # После отрисовки всего, переворачиваем экран
             pygame.display.flip()
