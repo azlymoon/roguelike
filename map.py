@@ -1,6 +1,9 @@
 import random
 import copy
 import heapq
+import math
+
+import pygame
 
 
 class PriorityQueue:
@@ -57,14 +60,33 @@ def a_star_search(dist, start, goal):
     return came_from
 
 
+class Wall(pygame.sprite.Sprite):
+    def __init__(self, pos, wall_type, map_sprites):
+        super().__init__(map_sprites)
+        # pygame.sprite.Sprite.__init__(self)
+        self.wall_type = wall_type
+        self.image = self.get_image()
+        self.rect = self.image.get_rect(topleft=pos)
+
+    def get_image(self):
+        wall_path = './img/map/gorizontal.png'
+        floor_path = './img/map/1.png'
+        if 'wall' in self.wall_type:
+            return pygame.image.load(wall_path).convert_alpha()
+        elif 'floor' in self.wall_type:
+            return pygame.image.load(floor_path).convert_alpha()
+
+
 class Map:
-    def __init__(self, width=100, height=32):
+    def __init__(self, width=38, height=20):
         self.width = width
         self.height = height
         self.cost_wall = 10
         self.cost_room = 5
         self.cost_room_wall = 15
         self.cost_frontier = 100000
+        self.tilesize = 32
+        self.map_sprites = pygame.sprite.Group()
         self.map = self.generate_map()
 
     def draw_in_terminal(self):
@@ -245,5 +267,14 @@ class Map:
         for y in range(len(dist)):
             for x in range(len(dist[0])):
                 map[y][x] = (True if dist[y][x] == self.cost_room else False)
-
         return map
+
+    def create_wall_sprites(self):
+        for row_index, row in enumerate(self.map):
+            for col_index, col in enumerate(row):
+                x = col_index * self.tilesize
+                y = row_index * self.tilesize
+                if col is True:
+                    Wall((x, y), 'floor', self.map_sprites)
+                elif col is False:
+                    Wall((x, y), 'wall', self.map_sprites)

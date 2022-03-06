@@ -23,10 +23,15 @@ class GameManager:
         self.entities = pygame.sprite.Group()
         self.state = "in_menu"
         self.map = None
-        self.map_surface = pygame.Surface((WIDTH, HEIGHT))
+        self.map_surface = None
+        # self.map_surface = pygame.Surface((WIDTH, HEIGHT))
 
     def init_map(self):
-        self.map = Map().get_map()
+        tmp = Map()
+        tmp.create_wall_sprites()
+        self.map_surface = tmp.map_sprites
+        self.map = tmp.get_map()
+        tmp.draw_in_terminal()
         player = Player((WIDTH / 2, HEIGHT / 2))
         self.entities.add(player)
         self.set_state("game_running")
@@ -61,6 +66,7 @@ class GameManager:
             # Рендеринг
             self.screen.fill(GREY)
             # self.screen.blit()
+            self.map_surface.draw(self.screen)
             self.entities.draw(self.screen)
             # После отрисовки всего, переворачиваем экран
             pygame.display.flip()
