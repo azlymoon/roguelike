@@ -1,6 +1,7 @@
 import pygame
 from Player import Player
 from map import Map
+from CameraGroup import CameraGroup
 
 WIDTH = 1280
 HEIGHT = 720
@@ -24,16 +25,16 @@ class GameManager:
         self.state = "in_menu"
         self.map = None
         self.map_surface = None
-        # self.map_surface = pygame.Surface((WIDTH, HEIGHT))
+        self.player = None
 
     def init_map(self):
         tmp = Map()
         tmp.create_wall_sprites()
         self.map_surface = tmp.map_sprites
         self.map = tmp.get_map()
-        tmp.draw_in_terminal()
-        player = Player((WIDTH / 2, HEIGHT / 2))
-        self.entities.add(player)
+        # tmp.draw_in_terminal()
+        self.player = Player((WIDTH / 2, HEIGHT / 2))
+        self.entities.add(self.player)
         self.set_state("game_running")
 
     def set_state(self, state):
@@ -43,12 +44,12 @@ class GameManager:
         self.init_map()
 
         # Отрисовка карты в консоль
-        # print('-' * 150)
-        # for y in range(len(self.map)):
-        #     for x in range(len(self.map[0])):
-        #         print(' ' if self.map[y][x] is True else '#', end=' ')
-        #     print()
-        # print('-' * 150)
+        print('-' * 150)
+        for y in range(len(self.map)):
+            for x in range(len(self.map[0])):
+                print(' ' if self.map[y][x] is True else '#', end=' ')
+            print()
+        print('-' * 150)
 
         running = True
         while running:
@@ -62,12 +63,14 @@ class GameManager:
 
             # Обновление
             self.entities.update()
-
+            self.map_surface.update()
             # Рендеринг
             self.screen.fill(GREY)
             # self.screen.blit()
-            self.map_surface.draw(self.screen)
+            # self.map_surface.draw(self.screen)
+            self.map_surface.custom_draw(self.player)
             self.entities.draw(self.screen)
+
             # После отрисовки всего, переворачиваем экран
             pygame.display.flip()
         pygame.quit()

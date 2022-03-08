@@ -1,7 +1,7 @@
 import random
 import copy
 import heapq
-
+from CameraGroup import CameraGroup
 import pygame
 
 
@@ -60,16 +60,16 @@ def a_star_search(dist, start, goal):
 
 
 class Wall(pygame.sprite.Sprite):
-    def __init__(self, pos, wall_type, map_sprites, map, point):
+    def __init__(self, pos, type, map_sprites, map, point):
         super().__init__(map_sprites)
         self.pos = pos
         self.map = map
-        self.wall_type = self.get_wall_type(point)
+        self.wall_type = self.get_wall_type(point, type)
         # self.wall_type = wall_type
         self.image = self.get_image()
         self.rect = self.image.get_rect(topleft=pos)
 
-    def get_wall_type(self, point):
+    def get_wall_type(self, point, type):
         ddx = [0, 1, 0, -1]
         ddy = [-1, 0, 1, 0]
         y, x = point
@@ -79,14 +79,18 @@ class Wall(pygame.sprite.Sprite):
                 check.append(self.map[y + ddy[i]][x + ddx[i]])
             else:
                 check.append(False)
-        print(check)
-        if check.count(True) == 0:
-            return 'empty'
-        elif (check[0] is True or check[2] is True) and check.count(True) == 1:
-            return 'horizontal'
-        elif (check[1] is True or check[3] is True) and check.count(True) == 1:
-            return 'vertical'
-        else:
+        if type is 'wall':
+            if check.count(True) == 0:
+                return 'empty'
+            elif (check[0] is True or check[2] is True) and check.count(True) == 1:
+                return 'horizontal'
+            elif (check[1] is True or check[3] is True) and check.count(True) == 1:
+                # return 'vertical'
+                print(type)
+                return 'test'
+            else:
+                return 'empty'
+        elif type is 'floor':
             return 'floor'
 
     def get_image(self):
@@ -95,19 +99,22 @@ class Wall(pygame.sprite.Sprite):
         wall_vertical_path = './img/map/vertical.png'
         floor_path = './img/map/1.png'
         empty_path = './img/map/dark.png'
+        test_path = './img/map/test.png'
+        test2_path = './img/map/test2.png'
         if 'horizontal' in self.wall_type:
             return pygame.image.load(wall_horizontal_path).convert_alpha()
         elif 'floor' in self.wall_type:
-            return pygame.image.load(floor_path).convert_alpha()
+            return pygame.image.load(test2_path).convert_alpha()
         elif 'vertical' in self.wall_type:
             return pygame.image.load(wall_vertical_path).convert_alpha()
         elif 'empty' in self.wall_type:
             return pygame.image.load(empty_path).convert_alpha()
+        elif 'test' in self.wall_type:
+            return pygame.image.load(test_path).convert_alpha()
 
 
-
-class Map:
-    def __init__(self, width=38, height=20):
+class Map:  # 38 20
+    def __init__(self, width=100, height=60):
         self.width = width
         self.height = height
         self.cost_wall = 10
@@ -115,7 +122,7 @@ class Map:
         self.cost_room_wall = 15
         self.cost_frontier = 100000
         self.tilesize = 32
-        self.map_sprites = pygame.sprite.Group()
+        self.map_sprites = CameraGroup()
         self.map = self.generate_map()
 
     def draw_in_terminal(self):
