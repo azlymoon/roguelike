@@ -2,12 +2,12 @@ import pygame
 from support import import_folder
 
 
-class Player(pygame.sprite.Sprite):
+class Flying_eye(pygame.sprite.Sprite):
     def __init__(self, pos):
         pygame.sprite.Sprite.__init__(self)
-        self.animations = {'idle_left': [], 'idle_right': [], 'idle_up': [], 'idle_down': [],
-                           'run_left': [], 'run_right': [], 'run_up': [], 'run_down': [],
-                           'attack_left': [], 'attack_right': [], 'attack_up': [], 'attack_down': [],
+        self.animations = {'idle_left': [], 'idle_right': [],
+                           'run_left': [], 'run_right': [],
+                           'attack_left': [], 'attack_right': []
 
                            }
 
@@ -16,21 +16,20 @@ class Player(pygame.sprite.Sprite):
         self.image = self.animations['idle_right'][self.frame_index]
         self.rect = self.image.get_rect(topleft=pos)
 
-        # player movement
+        # mob movement
 
         self.direction = pygame.math.Vector2(0, 0)
-        self.speed = 8
-        self.health = 3
-
-        # player status
+        self.speed = 6
+        self.health = 1
+        self.coordx = pos[0]
+        self.coordy = pos[1]
+        # mob status
         self.status = 'idle_right'
         self.attack_status = 0
         self.next_status = 0
-        self.coordx = pos[0]
-        self.coordy = pos[1]
 
     def import_assets(self):
-        path = './img/'
+        path = './img_mobs/flying_eye/'
 
         for animation in self.animations.keys():
             full_path = path + animation
@@ -39,25 +38,23 @@ class Player(pygame.sprite.Sprite):
     def animate(self):
         if self.status != '':
             animation = self.animations[self.status]
-            self.frame_index += len(animation) / 20
+            self.frame_index += 0.15
             if self.frame_index >= len(animation):
                 self.frame_index = 0
             self.image = animation[int(self.frame_index)]
 
     def get_input(self):
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_RIGHT]:
+        if keys[pygame.K_d]:
             self.direction.x = 1
-        elif keys[pygame.K_LEFT]:
+        elif keys[pygame.K_a]:
             self.direction.x = -1
-        elif keys[pygame.K_UP]:
+        elif keys[pygame.K_w]:
             self.direction.y = -1
-        elif keys[pygame.K_DOWN]:
+        elif keys[pygame.K_s]:
             self.direction.y = 1
-        elif keys[pygame.K_1]:
+        elif keys[pygame.K_SPACE]:
             self.attack_status = 1
-        elif keys[pygame.K_2]:
-            self.health -= 1
         else:
             self.direction.x = 0
             self.direction.y = 0
@@ -73,14 +70,6 @@ class Player(pygame.sprite.Sprite):
                 self.status = 'attack_left'
                 self.next_status = 'idle_left'
                 self.attack_status = 0
-            elif self.status == 'idle_up':
-                self.status = 'attack_up'
-                self.next_status = 'idle_up'
-                self.attack_status = 0
-            elif self.status == 'idle_down':
-                self.status = 'attack_down'
-                self.next_status = 'idle_down'
-                self.attack_status = 0
 
         else:
             if self.direction.x == 1:
@@ -89,12 +78,18 @@ class Player(pygame.sprite.Sprite):
             elif self.direction.x == -1:
                 self.status = 'run_left'
                 self.next_status = 'idle_left'
-            elif self.direction.y == 1:
-                self.status = 'run_down'
-                self.next_status = 'idle_down'
-            elif self.direction.y == -1:
-                self.status = 'run_up'
-                self.next_status = 'idle_up'
+            elif self.direction.y == 1 and self.status == 'idle_right':
+                self.status = 'run_right'
+                self.next_status = 'idle_right'
+            elif self.direction.y == -1 and self.status == 'idle_right':
+                self.status = 'run_right'
+                self.next_status = 'idle_right'
+            elif self.direction.y == 1 and self.status == 'idle_left':
+                self.status = 'run_left'
+                self.next_status = 'idle_left'
+            elif self.direction.y == -1 and self.status == 'idle_left':
+                self.status = 'run_left'
+                self.next_status = 'idle_left'
 
             else:
                 if self.next_status == 0:
@@ -110,3 +105,21 @@ class Player(pygame.sprite.Sprite):
         self.coordx += self.direction.x * self.speed
         self.coordy += self.direction.y * self.speed
         self.animate()
+
+
+class Skeleton(Flying_eye):
+    def import_assets(self):
+        path = './img_mobs/skeleton/'
+
+        for animation in self.animations.keys():
+            full_path = path + animation
+            self.animations[animation] = import_folder(full_path)
+
+
+class Goblin(Flying_eye):
+    def import_assets(self):
+        path = './img_mobs/goblin/'
+
+        for animation in self.animations.keys():
+            full_path = path + animation
+            self.animations[animation] = import_folder(full_path)
