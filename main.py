@@ -34,6 +34,7 @@ class GameManager:
         self.map = tmp.get_map()
         # tmp.draw_in_terminal()
         self.player = Player((WIDTH / 2, HEIGHT / 2))
+        self.map_surface.add(self.player)
         self.entities.add(self.player)
         self.set_state("game_running")
 
