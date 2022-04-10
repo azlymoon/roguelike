@@ -69,7 +69,7 @@ class GameManager:
             # self.screen.blit()
             # self.map_surface.draw(self.screen)
             self.map_surface.custom_draw(self.player)
-            self.entities.draw(self.screen)
+            # self.entities.draw(self.screen)
 
             # После отрисовки всего, переворачиваем экран
             pygame.display.flip()

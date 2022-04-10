@@ -85,9 +85,9 @@ class Wall(pygame.sprite.Sprite):
             elif (check[0] is True or check[2] is True) and check.count(True) == 1:
                 return 'horizontal'
             elif (check[1] is True or check[3] is True) and check.count(True) == 1:
-                # return 'vertical'
-                print(type)
-                return 'test'
+                return 'horizontal'
+                # print(type)
+                # return 'test'
             else:
                 return 'empty'
         elif type is 'floor':
@@ -114,7 +114,7 @@ class Wall(pygame.sprite.Sprite):
 
 
 class Map:  # 38 20
-    def __init__(self, width=100, height=60):
+    def __init__(self, width=38, height=22):
         self.width = width
         self.height = height
         self.cost_wall = 10
