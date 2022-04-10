@@ -1,6 +1,8 @@
 import random
 import copy
 import heapq
+from CameraGroup import CameraGroup
+import pygame
 
 
 class PriorityQueue:
@@ -29,7 +31,7 @@ def neighbors(dist, point):
     y, x = point
     neighbors = []
     for i in range(len(ddy)):
-        if 0 < y + ddy[i] < len(dist) and 0 < x + ddx[i] < len(dist[0]):
+        if 0 <= y + ddy[i] < len(dist) and 0 <= x + ddx[i] < len(dist[0]):
             neighbors.append((y + ddy[i], x + ddx[i]))
     return neighbors
 
@@ -57,14 +59,70 @@ def a_star_search(dist, start, goal):
     return came_from
 
 
-class Map:
-    def __init__(self, width=100, height=32):
+class Wall(pygame.sprite.Sprite):
+    def __init__(self, pos, type, map_sprites, map, point):
+        super().__init__(map_sprites)
+        self.pos = pos
+        self.map = map
+        self.wall_type = self.get_wall_type(point, type)
+        # self.wall_type = wall_type
+        self.image = self.get_image()
+        self.rect = self.image.get_rect(topleft=pos)
+
+    def get_wall_type(self, point, type):
+        ddx = [0, 1, 0, -1]
+        ddy = [-1, 0, 1, 0]
+        y, x = point
+        check = []
+        for i in range(len(ddy)):
+            if 0 <= y + ddy[i] < len(self.map) and 0 <= x + ddx[i] < len(self.map[0]):
+                check.append(self.map[y + ddy[i]][x + ddx[i]])
+            else:
+                check.append(False)
+        if type is 'wall':
+            if check.count(True) == 0:
+                return 'empty'
+            elif (check[0] is True or check[2] is True) and check.count(True) == 1:
+                return 'horizontal'
+            elif (check[1] is True or check[3] is True) and check.count(True) == 1:
+                return 'horizontal'
+                # print(type)
+                # return 'test'
+            else:
+                return 'empty'
+        elif type is 'floor':
+            return 'floor'
+
+    def get_image(self):
+        # print(neighbors(self.map, self.point))
+        wall_horizontal_path = './img/map/horizontal.png'
+        wall_vertical_path = './img/map/vertical.png'
+        floor_path = './img/map/1.png'
+        empty_path = './img/map/dark.png'
+        test_path = './img/map/test.png'
+        test2_path = './img/map/test2.png'
+        if 'horizontal' in self.wall_type:
+            return pygame.image.load(wall_horizontal_path).convert_alpha()
+        elif 'floor' in self.wall_type:
+            return pygame.image.load(test2_path).convert_alpha()
+        elif 'vertical' in self.wall_type:
+            return pygame.image.load(wall_vertical_path).convert_alpha()
+        elif 'empty' in self.wall_type:
+            return pygame.image.load(empty_path).convert_alpha()
+        elif 'test' in self.wall_type:
+            return pygame.image.load(test_path).convert_alpha()
+
+
+class Map:  # 38 20
+    def __init__(self, width=38, height=22):
         self.width = width
         self.height = height
         self.cost_wall = 10
         self.cost_room = 5
         self.cost_room_wall = 15
         self.cost_frontier = 100000
+        self.tilesize = 32
+        self.map_sprites = CameraGroup()
         self.map = self.generate_map()
 
     def draw_in_terminal(self):
@@ -74,6 +132,9 @@ class Map:
                 print('@' if self.map[y][x] is True else '#', end=' ')
             print()
         print('-' * 150)
+
+    def get_map(self):
+        return self.map
 
     def generate_map(self):
         def draw_in_terminal_dist():
@@ -242,8 +303,14 @@ class Map:
         for y in range(len(dist)):
             for x in range(len(dist[0])):
                 map[y][x] = (True if dist[y][x] == self.cost_room else False)
-
         return map
 
-
-map = Map()
+    def create_wall_sprites(self):
+        for row_index, row in enumerate(self.map):
+            for col_index, col in enumerate(row):
+                x = col_index * self.tilesize
+                y = row_index * self.tilesize
+                if col is True:
+                    Wall((x, y), 'floor', self.map_sprites, self.map, (row_index, col_index))
+                elif col is False:
+                    Wall((x, y), 'wall', self.map_sprites, self.map, (row_index, col_index))

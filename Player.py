@@ -1,5 +1,8 @@
 import pygame
+import pyganim
 from support import import_folder
+WIDTH = 32
+HEIGHT = 32
 
 
 class Player(pygame.sprite.Sprite):
@@ -14,6 +17,7 @@ class Player(pygame.sprite.Sprite):
         self.import_assets()
         self.frame_index = 0
         self.image = self.animations['idle_right'][self.frame_index]
+
         self.rect = self.image.get_rect(topleft=pos)
 
         # player movement
@@ -31,7 +35,6 @@ class Player(pygame.sprite.Sprite):
 
     def import_assets(self):
         path = './img/'
-
         for animation in self.animations.keys():
             full_path = path + animation
             self.animations[animation] = import_folder(full_path)

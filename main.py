@@ -1,13 +1,12 @@
 import pygame
 from Player import Player
+from map import Map
+from CameraGroup import CameraGroup
 from mobs import *
 from projectile import *
 from math import sqrt
-import time
-import threading
-
-WIDTH = 800
-HEIGHT = 650
+WIDTH = 1280
+HEIGHT = 720
 FPS = 30
 
 # Задаем цвета
@@ -18,62 +17,67 @@ GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 GREY = (47, 79, 79)
 
-# Создаем игру и окно
-pygame.init()
-pygame.mixer.init()
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("My Game")
-clock = pygame.time.Clock()
-all_sprites = pygame.sprite.Group()
-player = Player((WIDTH / 2, HEIGHT / 2))
-mob1 = Flying_eye((WIDTH / 2, HEIGHT / 4))
-mob2 = Skeleton((WIDTH / 4, HEIGHT / 4))
-mob3 = Goblin((WIDTH / 4, HEIGHT / 2))
-check = Flying_eye_projectile((mob1.coordx, mob1.coordy), (player.coordx, player.coordy))
-all_sprites.add(player)
-all_sprites.add(mob1)
-all_sprites.add(mob2)
-all_sprites.add(mob3)
+class GameManager:
+    def __init__(self):
+        pygame.display.set_caption("My Game")
+        self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
+        self.clock = pygame.time.Clock()
+        self.entities = pygame.sprite.Group()
+        self.state = "in_menu"
+        self.map = None
+        self.map_surface = None
+        self.player = None
 
-# Цикл игры
-running = True
-while running:
+    def init_map(self):
+        tmp = Map()
+        tmp.create_wall_sprites()
+        self.map_surface = tmp.map_sprites
+        self.map = tmp.get_map()
+        # tmp.draw_in_terminal()
+        self.player = Player((WIDTH / 2, HEIGHT / 2))
+        self.entities.add(self.player)
+        self.set_state("game_running")
 
-    # Держим цикл на правильной скорости
-    clock.tick(FPS)
-    # Ввод процесса (события)
-    for event in pygame.event.get():
-        # check for closing window
-        if event.type == pygame.QUIT:
-            running = False
-    if (sqrt((player.coordx - mob1.coordx) ** 2 + (player.coordy - mob1.coordy) ** 2)) <= 160:
-        if check.status == 'explode':
-            check.kill()
-            check = Flying_eye_projectile((mob1.coordx, mob1.coordy), (player.coordx, player.coordy))
-        else:
-            all_sprites.add(check)
+    def set_state(self, state):
+        self.state = state
 
-    # Обновление
-    if check.status == 'explode':
-        check.kill()
-    all_sprites.update()
+    def run(self):
+        self.init_map()
 
-    # Рендеринг
-    screen.fill(GREY)
-    left = 0
-    top = 0
-    wiph = 20
-    height = 400
-    myImage = pygame.image.load('./img/healthbar/1.png')
-    for i in range(0, player.health):
-        myRect = (left, top, wiph, height)
-        left += wiph
+        # Отрисовка карты в консоль
+        print('-' * 150)
+        for y in range(len(self.map)):
+            for x in range(len(self.map[0])):
+                print(' ' if self.map[y][x] is True else '#', end=' ')
+            print()
+        print('-' * 150)
 
-        screen.blit(myImage, myRect)
-    all_sprites.draw(screen)
-    if player.health <= 0:
-        myRect = (0, 0, WIDTH, HEIGHT)
-        screen.blit(pygame.image.load('./img/game_over/1.jpg'), myRect)
-    pygame.display.flip()
+        running = True
+        while running:
+            # Держим цикл на правильной скорости
+            self.clock.tick(FPS)
+            # Ввод процесса (события)
+            for event in pygame.event.get():
+                # check for closing window
+                if event.type == pygame.QUIT:
+                    running = False
 
-pygame.quit()
+            # Обновление
+            self.entities.update()
+            self.map_surface.update()
+            # Рендеринг
+            self.screen.fill(GREY)
+            # self.screen.blit()
+            # self.map_surface.draw(self.screen)
+            self.map_surface.custom_draw(self.player)
+            # self.entities.draw(self.screen)
+
+            # После отрисовки всего, переворачиваем экран
+            pygame.display.flip()
+        pygame.quit()
+
+
+if __name__ == '__main__':
+    pygame.init()
+    Manager = GameManager()
+    Manager.run()
