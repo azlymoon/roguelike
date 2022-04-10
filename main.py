@@ -2,7 +2,9 @@ import pygame
 from Player import Player
 from map import Map
 from CameraGroup import CameraGroup
-
+from mobs import *
+from projectile import *
+from math import sqrt
 WIDTH = 1280
 HEIGHT = 720
 FPS = 30
@@ -14,7 +16,6 @@ RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 GREY = (47, 79, 79)
-
 
 class GameManager:
     def __init__(self):
