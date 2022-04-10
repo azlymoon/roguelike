@@ -14,8 +14,8 @@ class Player(pygame.sprite.Sprite):
                            'slice_left': [], 'slice_right': [], 'slice_up': []}
         self.import_assets()
         self.frame_index = 0
-        self.image = pygame.Surface((WIDTH, HEIGHT))
-        # self.image = self.animations['idle'][self.frame_index]
+        # self.image = pygame.Surface((WIDTH, HEIGHT))
+        self.image = self.animations['idle'][self.frame_index]
         self.rect = self.image.get_rect(topleft=pos)
 
         # player movement
