@@ -17,6 +17,7 @@ GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 GREY = (47, 79, 79)
 
+
 class GameManager:
     def __init__(self):
         pygame.display.set_caption("My Game")
@@ -35,7 +36,7 @@ class GameManager:
         self.map = tmp.get_map()
         # tmp.draw_in_terminal()
         self.player = Player((WIDTH / 2, HEIGHT / 2))
-        self.entities.add(self.player)
+        self.map_surface.add(self.player)
         self.set_state("game_running")
 
     def set_state(self, state):
