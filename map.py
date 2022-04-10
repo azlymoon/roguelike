@@ -60,14 +60,20 @@ def a_star_search(dist, start, goal):
 
 
 class Wall(pygame.sprite.Sprite):
-    def __init__(self, pos, type, map_sprites, map, point):
-        super().__init__(map_sprites)
+    def __init__(self, pos, type, visible_sprites, obstacle_sprites, map, point):
+        super().__init__(visible_sprites)
         self.pos = pos
         self.map = map
         self.wall_type = self.get_wall_type(point, type)
+        self.obstacle_sprites = obstacle_sprites
         # self.wall_type = wall_type
         self.image = self.get_image()
         self.rect = self.image.get_rect(topleft=pos)
+        self.add_to_obstacle_sprites()
+
+    def add_to_obstacle_sprites(self):
+        if self.wall_type in ['horizontal', 'vertical']:
+            self.obstacle_sprites.add(self)
 
     def get_wall_type(self, point, type):
         ddx = [0, 1, 0, -1]
@@ -122,8 +128,9 @@ class Map:  # 38 20
         self.cost_room = 5
         self.cost_room_wall = 15
         self.cost_frontier = 100000
-        self.tilesize = 32
-        self.map_sprites = CameraGroup()
+        self.tilesize = 40
+        self.visible_sprites = CameraGroup()
+        self.obstacle_sprites = pygame.sprite.Group()
         self.map = self.generate_map()
 
     def draw_in_terminal(self):
@@ -312,6 +319,6 @@ class Map:  # 38 20
                 x = col_index * self.tilesize
                 y = row_index * self.tilesize
                 if col is True:
-                    Wall((x, y), 'floor', self.map_sprites, self.map, (row_index, col_index))
+                    Wall((x, y), 'floor', self.visible_sprites, self.obstacle_sprites, self.map, (row_index, col_index))
                 elif col is False:
-                    Wall((x, y), 'wall', self.map_sprites, self.map, (row_index, col_index))
+                    Wall((x, y), 'wall', self.visible_sprites, self.obstacle_sprites, self.map, (row_index, col_index))
