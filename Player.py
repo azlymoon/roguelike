@@ -35,7 +35,7 @@ class Player(pygame.sprite.Sprite):
         self.obstacle_sprites = obstacle_sprites
 
     def import_assets(self):
-        path = './img/img/'
+        path = './img/'
         for animation in self.animations.keys():
             full_path = path + animation
             self.animations[animation] = import_folder(full_path)
