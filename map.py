@@ -85,18 +85,20 @@ class Wall(pygame.sprite.Sprite):
                 check.append(self.map[y + ddy[i]][x + ddx[i]])
             else:
                 check.append(False)
-        if type is 'wall':
+        if type == 'wall':
             if check.count(True) == 0:
                 return 'empty'
-            elif (check[0] is True or check[2] is True) and check.count(True) == 1:
+            # elif (check[0] is True or check[2] is True) and check.count(True) == 1:
+            #     return 'horizontal'
+            # elif (check[1] is True or check[3] is True) and check.count(True) == 1:
+            #     return 'horizontal'
+            #     # print(type)
+            #     # return 'test'
+            elif check.count(True) > 0:
                 return 'horizontal'
-            elif (check[1] is True or check[3] is True) and check.count(True) == 1:
-                return 'horizontal'
-                # print(type)
-                # return 'test'
             else:
                 return 'empty'
-        elif type is 'floor':
+        elif type == 'floor':
             return 'floor'
 
     def get_image(self):
@@ -131,6 +133,7 @@ class Map:  # 38 20
         self.tilesize = 40
         self.visible_sprites = CameraGroup()
         self.obstacle_sprites = pygame.sprite.Group()
+        self.walls = []
         self.map = self.generate_map()
 
     def draw_in_terminal(self):
@@ -313,12 +316,19 @@ class Map:  # 38 20
                 map[y][x] = (True if dist[y][x] == self.cost_room else False)
         return map
 
+    def get_spawn_coord_in_room(self):
+        while True:
+            rand_spawn = random.randint(0, len(self.walls))
+            spawn_point = self.walls[rand_spawn]
+            if spawn_point.wall_type == 'floor':
+                return spawn_point.pos
+
     def create_wall_sprites(self):
         for row_index, row in enumerate(self.map):
             for col_index, col in enumerate(row):
                 x = col_index * self.tilesize
                 y = row_index * self.tilesize
                 if col is True:
-                    Wall((x, y), 'floor', self.visible_sprites, self.obstacle_sprites, self.map, (row_index, col_index))
+                    self.walls.append(Wall((x, y), 'floor', self.visible_sprites, self.obstacle_sprites, self.map, (row_index, col_index)))
                 elif col is False:
-                    Wall((x, y), 'wall', self.visible_sprites, self.obstacle_sprites, self.map, (row_index, col_index))
+                    self.walls.append(Wall((x, y), 'wall', self.visible_sprites, self.obstacle_sprites, self.map, (row_index, col_index)))

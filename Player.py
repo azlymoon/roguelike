@@ -127,9 +127,9 @@ class Player(pygame.sprite.Sprite):
         self.get_input()
         self.get_status()
         self.rect.x += self.direction.x * self.speed
-        # self.coordx += self.direction.x * self.speed
+        self.coordx += self.direction.x * self.speed
         self.collision('horizontal')
         self.rect.y += self.direction.y * self.speed
-        # self.coordy += self.direction.y * self.speed
+        self.coordy += self.direction.y * self.speed
         self.collision('vertical')
         self.animate()
