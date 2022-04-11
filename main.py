@@ -30,6 +30,7 @@ class GameManager:
         self.map_surface = None
         self.player = None
         self.mob1 = None
+        self.check = Flying_eye_projectile((WIDTH / 2, HEIGHT / 2 + 10), (WIDTH / 2, HEIGHT / 2))
 
     def init_map(self):
         tmp = Map()
@@ -38,10 +39,11 @@ class GameManager:
         self.map = tmp.get_map()
         # tmp.draw_in_terminal()
         self.player = Player((WIDTH / 2, HEIGHT / 2))
-        self.mob1 = Flying_eye((WIDTH / 2, HEIGHT / 4), (WIDTH / 2, HEIGHT / 2))
-
+        self.mob1 = Flying_eye((WIDTH / 2, HEIGHT / 2 + 10), (WIDTH / 2, HEIGHT / 2))
+        self.check = Flying_eye_projectile((WIDTH / 2, HEIGHT / 2 + 10), (WIDTH / 2, HEIGHT / 2))
         self.map_surface.add(self.player)
         self.map_surface.add(self.mob1)
+        self.map_surface.add(self.check)
         self.set_state("game_running")
 
     def set_state(self, state):
@@ -67,6 +69,15 @@ class GameManager:
                 # check for closing window
                 if event.type == pygame.QUIT:
                     running = False
+            if (
+            sqrt((self.player.coordx - self.mob1.coordx) ** 2 + (self.player.coordy - self.mob1.coordy) ** 2)) <= 160:
+                if self.check.status == 'explode':
+                    self.check.kill()
+                    self.check = Flying_eye_projectile((self.mob1.coordx, self.mob1.coordy),
+                                                       (self.player.coordx, self.player.coordy))
+                else:
+
+                    self.map_surface.custom_draw(self.check)
 
             # Обновление
             self.entities.update()

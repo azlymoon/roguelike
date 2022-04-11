@@ -1,6 +1,8 @@
 import pygame
 from support import import_folder
 from projectile import Flying_eye_projectile, Goblin_projectile
+from math import sqrt
+
 
 class Flying_eye(pygame.sprite.Sprite):
     def __init__(self, pos, player_pos):
@@ -29,9 +31,10 @@ class Flying_eye(pygame.sprite.Sprite):
         self.status = 'idle_right'
         self.attack_status = 0
         self.next_status = 0
-        self.projectile=Flying_eye_projectile(pos,player_pos)
+        #self.projectile = None
+
     def import_assets(self):
-        path = '.img/img_mobs/flying_eye/'
+        path = './img/img_mobs/flying_eye/'
 
         for animation in self.animations.keys():
             full_path = path + animation
@@ -63,6 +66,10 @@ class Flying_eye(pygame.sprite.Sprite):
             self.attack_status = 0
 
     def get_status(self):
+        if sqrt((self.coordx - self.playerx) ** 2 + (self.coordy - self.playery) ** 2) < 160:
+            self.attack_status = 1
+            #self.projectile = Flying_eye_projectile((self.coordx, self.coordy), player_pos)
+            #self.projectile.status = 'fly'
         if self.attack_status == 1:
             if self.status == 'idle_right':
                 self.status = 'attack_right'
