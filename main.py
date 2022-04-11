@@ -38,8 +38,11 @@ class GameManager:
         self.visible_sprites = tmp.visible_sprites
         self.map = tmp.get_map()
         # tmp.draw_in_terminal()
+
         self.player = Player(tmp.get_spawn_coord_in_room(), tmp.obstacle_sprites)
+        self.mob1 = Flying_eye(tmp.get_spawn_coord_in_room(), (self.player.coordx, self.player.coordy))
         self.visible_sprites.add(self.player)
+        self.visible_sprites.add(self.mob1)
 
         self.set_state("game_running")
 
@@ -74,7 +77,7 @@ class GameManager:
                                                        (self.player.coordx, self.player.coordy))
                 else:
 
-                    self.map_surface.custom_draw(self.check)
+                    self.visible_sprites.custom_draw(self.check)
 
             # Обновление
             # self.entities.update()
