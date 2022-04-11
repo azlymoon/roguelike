@@ -1,9 +1,9 @@
 import pygame
 from support import import_folder
-
+from projectile import Flying_eye_projectile, Goblin_projectile
 
 class Flying_eye(pygame.sprite.Sprite):
-    def __init__(self, pos):
+    def __init__(self, pos, player_pos):
         pygame.sprite.Sprite.__init__(self)
         self.animations = {'idle_left': [], 'idle_right': [],
                            'run_left': [], 'run_right': [],
@@ -23,13 +23,15 @@ class Flying_eye(pygame.sprite.Sprite):
         self.health = 1
         self.coordx = pos[0]
         self.coordy = pos[1]
+        self.playerx = player_pos[0]
+        self.playery = player_pos[1]
         # mob status
         self.status = 'idle_right'
         self.attack_status = 0
         self.next_status = 0
-
+        self.projectile=Flying_eye_projectile(pos,player_pos)
     def import_assets(self):
-        path = './img_mobs/flying_eye/'
+        path = '.img/img_mobs/flying_eye/'
 
         for animation in self.animations.keys():
             full_path = path + animation
@@ -107,22 +109,22 @@ class Flying_eye(pygame.sprite.Sprite):
         self.animate()
 
 
-class Skeleton(Flying_eye):
-    def import_assets(self):
-        path = './img_mobs/skeleton/'
-
-        for animation in self.animations.keys():
-            full_path = path + animation
-            self.animations[animation] = import_folder(full_path)
+# class Skeleton(Flying_eye):
+#     def import_assets(self):
+#         path = './img_mobs/skeleton/'
+#
+#         for animation in self.animations.keys():
+#             full_path = path + animation
+#             self.animations[animation] = import_folder(full_path)
 
 
 class Goblin(Flying_eye):
-    def __init__(self, all_sprites):
-        super().__init__(all_sprites)
-
+    def __init__(self, pos, player_pos):
+        super().__init__(pos=pos, player_pos=player_pos)
+        self.projectile = Goblin_projectile(pos=pos, player_pos=player_pos)
 
     def import_assets(self):
-        path = './img_mobs/goblin/'
+        path = '.img/img_mobs/goblin/'
 
         for animation in self.animations.keys():
             full_path = path + animation

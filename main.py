@@ -2,9 +2,10 @@ import pygame
 from Player import Player
 from map import Map
 from CameraGroup import CameraGroup
-from mobs import *
-from projectile import *
+from mobs import Flying_eye, Goblin
+from projectile import Flying_eye_projectile, Goblin_projectile
 from math import sqrt
+
 WIDTH = 1280
 HEIGHT = 720
 FPS = 30
@@ -28,6 +29,7 @@ class GameManager:
         self.map = None
         self.visible_sprites = None
         self.player = None
+        self.mob1 = None
 
     def init_map(self):
         tmp = Map()
