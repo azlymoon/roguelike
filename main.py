@@ -32,6 +32,7 @@ class GameManager:
         self.mob1 = None
         self.check = Flying_eye_projectile((WIDTH / 2, HEIGHT / 2 + 10), (WIDTH / 2, HEIGHT / 2))
 
+
     def init_map(self):
         tmp = Map()
         tmp.create_wall_sprites()
@@ -43,7 +44,6 @@ class GameManager:
         self.mob1 = Flying_eye(tmp.get_spawn_coord_in_room(), (self.player.coordx, self.player.coordy))
         self.visible_sprites.add(self.player)
         self.visible_sprites.add(self.mob1)
-
         self.set_state("game_running")
 
     def set_state(self, state):
@@ -86,7 +86,9 @@ class GameManager:
             self.screen.fill(BLACK)
             # self.screen.blit()
             # self.map_surface.draw(self.screen)
+
             self.visible_sprites.custom_draw(self.player)
+
             # self.entities.draw(self.screen)
 
             # После отрисовки всего, переворачиваем экран

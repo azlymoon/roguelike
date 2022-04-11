@@ -31,10 +31,11 @@ class Flying_eye(pygame.sprite.Sprite):
         self.status = 'idle_right'
         self.attack_status = 0
         self.next_status = 0
-        #self.projectile = None
+        self.projectile=Flying_eye_projectile(pos,player_pos)
 
     def import_assets(self):
-        path = './img/img_mobs/flying_eye/'
+        path = '.img/img_mobs/flying_eye/'
+
 
         for animation in self.animations.keys():
             full_path = path + animation
