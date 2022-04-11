@@ -1,12 +1,11 @@
 import pygame
-import pyganim
 from support import import_folder
 WIDTH = 32
 HEIGHT = 32
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, pos):
+    def __init__(self, pos, obstacle_sprites):
         pygame.sprite.Sprite.__init__(self)
         self.animations = {'idle_left': [], 'idle_right': [], 'idle_up': [], 'idle_down': [],
                            'run_left': [], 'run_right': [], 'run_up': [], 'run_down': [],
@@ -32,6 +31,8 @@ class Player(pygame.sprite.Sprite):
         self.next_status = 0
         self.coordx = pos[0]
         self.coordy = pos[1]
+
+        self.obstacle_sprites = obstacle_sprites
 
     def import_assets(self):
         path = './img/'
@@ -105,11 +106,30 @@ class Player(pygame.sprite.Sprite):
                 else:
                     self.status = self.next_status
 
+    def collision(self, direction):
+        if direction == 'horizontal':
+            for sprite in self.obstacle_sprites:
+                if sprite.rect.colliderect(self.rect):
+                    if self.direction.x > 0:
+                        self.rect.right = sprite.rect.left
+                    if self.direction.x < 0:
+                        self.rect.left = sprite.rect.right
+
+        if direction == 'vertical':
+            for sprite in self.obstacle_sprites:
+                if sprite.rect.colliderect(self.rect):
+                    if self.direction.y > 0:
+                        self.rect.bottom = sprite.rect.top
+                    if self.direction.y < 0:
+                        self.rect.top = sprite.rect.bottom
+
     def update(self):
         self.get_input()
         self.get_status()
         self.rect.x += self.direction.x * self.speed
-        self.rect.y += self.direction.y * self.speed
         self.coordx += self.direction.x * self.speed
+        self.collision('horizontal')
+        self.rect.y += self.direction.y * self.speed
         self.coordy += self.direction.y * self.speed
+        self.collision('vertical')
         self.animate()

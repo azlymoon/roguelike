@@ -117,6 +117,10 @@ class Skeleton(Flying_eye):
 
 
 class Goblin(Flying_eye):
+    def __init__(self, all_sprites):
+        super().__init__(all_sprites)
+
+
     def import_assets(self):
         path = './img_mobs/goblin/'
 
