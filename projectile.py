@@ -1,4 +1,5 @@
 import pygame
+from support import import_folder
 from math import sqrt
 
 
@@ -23,7 +24,7 @@ class Flying_eye_projectile(pygame.sprite.Sprite):
         self.coordy = self.pos[1]
 
     def import_assets(self):
-        path = '.img/img_mobs/flying_eye_projectile/'
+        path = './img/img_mobs/flying_eye_projectile/'
 
         for animation in self.animations.keys():
             full_path = path + animation
@@ -45,7 +46,7 @@ class Flying_eye_projectile(pygame.sprite.Sprite):
             self.status = 'fly'
 
     def update(self):
-        self.get_status(pos=self.pos, player_pos=self.player_pos)
+        #self.get_status(pos=self.pos, player_pos=self.player_pos)
         if self.status != 'explode':
             self.rect.x += self.length1 / self.speed
             self.rect.y += self.length2 / self.speed
@@ -56,7 +57,7 @@ class Flying_eye_projectile(pygame.sprite.Sprite):
 
 class Goblin_projectile(Flying_eye_projectile):
     def import_assets(self):
-        path = '.img/img_mobs/goblin_projectile/'
+        path = './img/img_mobs/goblin_projectile/'
 
         for animation in self.animations.keys():
             full_path = path + animation
