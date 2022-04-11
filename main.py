@@ -2,9 +2,10 @@ import pygame
 from Player import Player
 from map import Map
 from CameraGroup import CameraGroup
-from mobs import *
-from projectile import *
+from mobs import Flying_eye, Goblin
+from projectile import Flying_eye_projectile, Goblin_projectile
 from math import sqrt
+
 WIDTH = 1280
 HEIGHT = 720
 FPS = 30
@@ -28,6 +29,7 @@ class GameManager:
         self.map = None
         self.map_surface = None
         self.player = None
+        self.mob1 = None
 
     def init_map(self):
         tmp = Map()
@@ -36,7 +38,10 @@ class GameManager:
         self.map = tmp.get_map()
         # tmp.draw_in_terminal()
         self.player = Player((WIDTH / 2, HEIGHT / 2))
+        self.mob1 = Flying_eye((WIDTH / 2, HEIGHT / 4), (WIDTH / 2, HEIGHT / 2))
+
         self.map_surface.add(self.player)
+        self.map_surface.add(self.mob1)
         self.set_state("game_running")
 
     def set_state(self, state):
@@ -71,6 +76,7 @@ class GameManager:
             # self.screen.blit()
             # self.map_surface.draw(self.screen)
             self.map_surface.custom_draw(self.player)
+            self.map_surface.custom_draw(self.mob1)
             # self.entities.draw(self.screen)
 
             # После отрисовки всего, переворачиваем экран

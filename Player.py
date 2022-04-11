@@ -34,7 +34,7 @@ class Player(pygame.sprite.Sprite):
         self.coordy = pos[1]
 
     def import_assets(self):
-        path = './img/'
+        path = './img/img/'
         for animation in self.animations.keys():
             full_path = path + animation
             self.animations[animation] = import_folder(full_path)
