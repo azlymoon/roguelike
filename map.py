@@ -88,18 +88,15 @@ class Wall(pygame.sprite.Sprite):
         if type == 'wall':
             if check.count(True) == 0:
                 return 'empty'
-            # elif (check[0] is True or check[2] is True) and check.count(True) == 1:
-            #     return 'horizontal'
-            # elif (check[1] is True or check[3] is True) and check.count(True) == 1:
-            #     return 'horizontal'
-            #     # print(type)
-            #     # return 'test'
             elif check.count(True) > 0:
                 return 'horizontal'
             else:
                 return 'empty'
         elif type == 'floor':
-            return 'floor'
+            if check.count(True) < 4:
+                return 'floor_near_wall'
+            else:
+                return 'floor_in_room'
 
     def get_image(self):
         # print(neighbors(self.map, self.point))
@@ -111,7 +108,7 @@ class Wall(pygame.sprite.Sprite):
         test2_path = './img/map/test2.png'
         if 'horizontal' in self.wall_type:
             return pygame.image.load(wall_horizontal_path).convert_alpha()
-        elif 'floor' in self.wall_type:
+        elif 'floor_near_wall' in self.wall_type or 'floor_in_room' in self.wall_type:
             return pygame.image.load(test2_path).convert_alpha()
         elif 'vertical' in self.wall_type:
             return pygame.image.load(wall_vertical_path).convert_alpha()
@@ -320,7 +317,7 @@ class Map:  # 38 20
         while True:
             rand_spawn = random.randint(0, len(self.walls))
             spawn_point = self.walls[rand_spawn]
-            if spawn_point.wall_type == 'floor':
+            if spawn_point.wall_type == 'floor_in_room':
                 return spawn_point.pos
 
     def create_wall_sprites(self):
