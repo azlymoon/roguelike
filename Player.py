@@ -51,18 +51,22 @@ class Player(pygame.sprite.Sprite):
     def get_input(self):
         keys = pygame.key.get_pressed()
         if keys.count(True) > 0:
-            if keys[pygame.K_RIGHT]:
-                self.direction.x = 1
-            if keys[pygame.K_LEFT]:
-                self.direction.x = -1
-            if keys[pygame.K_UP]:
-                self.direction.y = -1
-            if keys[pygame.K_DOWN]:
-                self.direction.y = 1
             if keys[pygame.K_1]:
                 self.attack_status = 1
-            if keys[pygame.K_2]:
-                self.health -= 1
+                self.direction.x = 0
+                self.direction.y = 0
+            else:
+                self.attack_status = 0
+                if keys[pygame.K_RIGHT]:
+                    self.direction.x = 1
+                if keys[pygame.K_LEFT]:
+                    self.direction.x = -1
+                if keys[pygame.K_UP]:
+                    self.direction.y = -1
+                if keys[pygame.K_DOWN]:
+                    self.direction.y = 1
+                if keys[pygame.K_2]:
+                    self.health -= 1
         else:
             self.direction.x = 0
             self.direction.y = 0
@@ -70,23 +74,23 @@ class Player(pygame.sprite.Sprite):
 
     def get_status(self):
         if self.attack_status == 1:
-            if self.status == 'idle_right':
+            print(self.attack_status)
+            if self.status in ['idle_right', 'run_right']:
                 self.status = 'attack_right'
                 self.next_status = 'idle_right'
                 self.attack_status = 0
-            elif self.status == 'idle_left':
+            elif self.status in ['idle_left', 'run_left']:
                 self.status = 'attack_left'
                 self.next_status = 'idle_left'
                 self.attack_status = 0
-            elif self.status == 'idle_up':
+            elif self.status in ['idle_up', 'run_up']:
                 self.status = 'attack_up'
                 self.next_status = 'idle_up'
                 self.attack_status = 0
-            elif self.status == 'idle_down':
+            elif self.status in ['idle_down', 'run_down']:
                 self.status = 'attack_down'
                 self.next_status = 'idle_down'
                 self.attack_status = 0
-
         else:
             if self.direction.x == 1:
                 self.status = 'run_right'
@@ -127,6 +131,7 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         self.get_input()
         self.get_status()
+        print(self.status)
         self.rect.x += self.direction.x * self.speed
         self.coordx += self.direction.x * self.speed
         self.collision('horizontal')
