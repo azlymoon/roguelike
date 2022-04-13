@@ -74,7 +74,6 @@ class Player(pygame.sprite.Sprite):
 
     def get_status(self):
         if self.attack_status == 1:
-            print(self.attack_status)
             if self.status in ['idle_right', 'run_right']:
                 self.status = 'attack_right'
                 self.next_status = 'idle_right'
