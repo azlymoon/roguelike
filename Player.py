@@ -130,7 +130,6 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         self.get_input()
         self.get_status()
-        print(self.status)
         self.rect.x += self.direction.x * self.speed
         self.coordx += self.direction.x * self.speed
         self.collision('horizontal')
