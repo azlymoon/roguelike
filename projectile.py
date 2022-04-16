@@ -24,7 +24,7 @@ class Flying_eye_projectile(pygame.sprite.Sprite):
         self.coordy = self.pos[1]
 
     def import_assets(self):
-        path = './img/img_mobs/flying_eye_projectile/'
+        path = './flying_eye_projectile/'
 
         for animation in self.animations.keys():
             full_path = path + animation
@@ -57,7 +57,16 @@ class Flying_eye_projectile(pygame.sprite.Sprite):
 
 class Goblin_projectile(Flying_eye_projectile):
     def import_assets(self):
-        path = './img/img_mobs/goblin_projectile/'
+        path = './goblin_projectile/'
+
+        for animation in self.animations.keys():
+            full_path = path + animation
+            self.animations[animation] = import_folder(full_path)
+
+
+class Mushroom_projectile(Flying_eye_projectile):
+    def import_assets(self):
+        path = './mushroom_projectile/'
 
         for animation in self.animations.keys():
             full_path = path + animation

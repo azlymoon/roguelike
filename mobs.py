@@ -1,6 +1,6 @@
 import pygame
 from support import import_folder
-from projectile import Flying_eye_projectile, Goblin_projectile
+from projectile import Flying_eye_projectile, Goblin_projectile, Mushroom_projectile
 from math import sqrt
 
 
@@ -34,7 +34,7 @@ class Flying_eye(pygame.sprite.Sprite):
         self.projectile = Flying_eye_projectile(pos, player_pos)
 
     def import_assets(self):
-        path = './img/img_mobs/flying_eye/'
+        path = './flying_eye/'
 
         for animation in self.animations.keys():
             full_path = path + animation
@@ -134,7 +134,7 @@ class Goblin(Flying_eye):
         self.projectile = Goblin_projectile(pos=pos, player_pos=player_pos)
 
     def import_assets(self):
-        path = '.img/img_mobs/goblin/'
+        path = './goblin/'
 
         for animation in self.animations.keys():
             full_path = path + animation
@@ -142,3 +142,18 @@ class Goblin(Flying_eye):
 
     def create_projectile(self, mob_coords, player_coords):
         self.projectile = Goblin_projectile(mob_coords, player_coords)
+
+class Mushroom(Flying_eye):
+    def __init__(self, pos, player_pos):
+        super().__init__(pos=pos, player_pos=player_pos)
+        self.projectile = Mushroom_projectile(pos=pos, player_pos=player_pos)
+
+    def import_assets(self):
+        path = './mushroom/'
+
+        for animation in self.animations.keys():
+            full_path = path + animation
+            self.animations[animation] = import_folder(full_path)
+
+    def create_projectile(self, mob_coords, player_coords):
+        self.projectile = Mushroom_projectile(mob_coords, player_coords)

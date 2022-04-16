@@ -2,8 +2,8 @@ import pygame
 from Player import Player
 from map import Map
 from CameraGroup import CameraGroup
-from mobs import Flying_eye, Goblin
-from projectile import Flying_eye_projectile, Goblin_projectile
+from mobs import Flying_eye, Goblin, Mushroom
+from projectile import Flying_eye_projectile, Goblin_projectile, Mushroom_projectile
 from math import sqrt
 
 WIDTH = 1280
@@ -30,7 +30,9 @@ class GameManager:
         self.visible_sprites = None
         self.player = None
         self.mob1 = None
-        #self.check = Flying_eye_projectile((WIDTH / 2, HEIGHT / 2 + 10), (WIDTH / 2, HEIGHT / 2))
+        self.mob2 = None
+        self.mob3 = None
+        self.mobs = []
 
     def init_map(self):
         tmp = Map()
@@ -41,8 +43,15 @@ class GameManager:
 
         self.player = Player(tmp.get_spawn_coord_in_room(), tmp.obstacle_sprites)
         self.mob1 = Flying_eye(tmp.get_spawn_coord_in_room(), (self.player.coordx, self.player.coordy))
+        self.mob2 = Goblin(tmp.get_spawn_coord_in_room(), (self.player.coordx, self.player.coordy))
+        self.mob3 = Mushroom(tmp.get_spawn_coord_in_room(), (self.player.coordx, self.player.coordy))
         self.visible_sprites.add(self.player)
         self.visible_sprites.add(self.mob1)
+        self.visible_sprites.add(self.mob2)
+        self.visible_sprites.add(self.mob3)
+        self.mobs.append(self.mob1)
+        self.mobs.append(self.mob2)
+        self.mobs.append(self.mob3)
         self.set_state("game_running")
 
     def set_state(self, state):
@@ -68,15 +77,15 @@ class GameManager:
                 # check for closing window
                 if event.type == pygame.QUIT:
                     running = False
-
-            if (
-            sqrt((self.player.coordx - self.mob1.coordx) ** 2 + (self.player.coordy - self.mob1.coordy) ** 2)) <= 160:
-                if self.mob1.projectile.status == 'explode':
-                    self.mob1.projectile.kill()
-                    self.mob1.create_projectile((self.mob1.coordx, self.mob1.coordy),
-                                                       (self.player.coordx, self.player.coordy))
-                else:
-                    self.visible_sprites.add(self.mob1.projectile)
+            for mob in self.mobs:
+                if mob.projectile.status == "explode":
+                    mob.projectile.kill()
+                if (
+                        sqrt((self.player.coordx - mob.coordx) ** 2 + (self.player.coordy - mob.coordy) ** 2)) <= 160:
+                    if mob.projectile.status == 'explode':
+                        mob.create_projectile((mob.coordx, mob.coordy), (self.player.coordx, self.player.coordy))
+                    else:
+                        self.visible_sprites.add(mob.projectile)
 
             # Обновление
             # self.entities.update()
