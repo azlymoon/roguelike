@@ -1,9 +1,11 @@
 import pygame
 from support import import_folder
+from projectile import Flying_eye_projectile, Goblin_projectile, Mushroom_projectile
+from math import sqrt
 
 
 class Flying_eye(pygame.sprite.Sprite):
-    def __init__(self, pos):
+    def __init__(self, pos, player_pos):
         pygame.sprite.Sprite.__init__(self)
         self.animations = {'idle_left': [], 'idle_right': [],
                            'run_left': [], 'run_right': [],
@@ -23,13 +25,16 @@ class Flying_eye(pygame.sprite.Sprite):
         self.health = 1
         self.coordx = pos[0]
         self.coordy = pos[1]
+        self.playerx = player_pos[0]
+        self.playery = player_pos[1]
         # mob status
         self.status = 'idle_right'
         self.attack_status = 0
         self.next_status = 0
+        self.projectile = Flying_eye_projectile(pos, player_pos)
 
     def import_assets(self):
-        path = './img_mobs/flying_eye/'
+        path = './flying_eye/'
 
         for animation in self.animations.keys():
             full_path = path + animation
@@ -61,6 +66,10 @@ class Flying_eye(pygame.sprite.Sprite):
             self.attack_status = 0
 
     def get_status(self):
+        if sqrt((self.coordx - self.playerx) ** 2 + (self.coordy - self.playery) ** 2) < 160:
+            self.attack_status = 1
+            # self.projectile = Flying_eye_projectile((self.coordx, self.coordy), player_pos)
+            # self.projectile.status = 'fly'
         if self.attack_status == 1:
             if self.status == 'idle_right':
                 self.status = 'attack_right'
@@ -97,6 +106,9 @@ class Flying_eye(pygame.sprite.Sprite):
                 else:
                     self.status = self.next_status
 
+    def create_projectile(self, mob_coords, player_coords):
+        self.projectile = Flying_eye_projectile(mob_coords, player_coords)
+
     def update(self):
         self.get_input()
         self.get_status()
@@ -107,23 +119,41 @@ class Flying_eye(pygame.sprite.Sprite):
         self.animate()
 
 
-class Skeleton(Flying_eye):
-    def import_assets(self):
-        path = './img_mobs/skeleton/'
-
-        for animation in self.animations.keys():
-            full_path = path + animation
-            self.animations[animation] = import_folder(full_path)
+# class Skeleton(Flying_eye):
+#     def import_assets(self):
+#         path = './img_mobs/skeleton/'
+#
+#         for animation in self.animations.keys():
+#             full_path = path + animation
+#             self.animations[animation] = import_folder(full_path)
 
 
 class Goblin(Flying_eye):
-    def __init__(self, all_sprites):
-        super().__init__(all_sprites)
-
+    def __init__(self, pos, player_pos):
+        super().__init__(pos=pos, player_pos=player_pos)
+        self.projectile = Goblin_projectile(pos=pos, player_pos=player_pos)
 
     def import_assets(self):
-        path = './img_mobs/goblin/'
+        path = './goblin/'
 
         for animation in self.animations.keys():
             full_path = path + animation
             self.animations[animation] = import_folder(full_path)
+
+    def create_projectile(self, mob_coords, player_coords):
+        self.projectile = Goblin_projectile(mob_coords, player_coords)
+
+class Mushroom(Flying_eye):
+    def __init__(self, pos, player_pos):
+        super().__init__(pos=pos, player_pos=player_pos)
+        self.projectile = Mushroom_projectile(pos=pos, player_pos=player_pos)
+
+    def import_assets(self):
+        path = './mushroom/'
+
+        for animation in self.animations.keys():
+            full_path = path + animation
+            self.animations[animation] = import_folder(full_path)
+
+    def create_projectile(self, mob_coords, player_coords):
+        self.projectile = Mushroom_projectile(mob_coords, player_coords)

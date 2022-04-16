@@ -1,4 +1,5 @@
-from mobs import *
+import pygame
+from support import import_folder
 from math import sqrt
 
 
@@ -23,7 +24,7 @@ class Flying_eye_projectile(pygame.sprite.Sprite):
         self.coordy = self.pos[1]
 
     def import_assets(self):
-        path = './img_mobs/flying_eye_projectile/'
+        path = './flying_eye_projectile/'
 
         for animation in self.animations.keys():
             full_path = path + animation
@@ -42,13 +43,31 @@ class Flying_eye_projectile(pygame.sprite.Sprite):
         if (abs(self.coordx - self.player_pos[0]) < 10) and (abs(self.coordy - self.player_pos[1]) < 10):
             self.status = 'explode'
         else:
-            self.status='fly'
+            self.status = 'fly'
 
     def update(self):
-        self.get_status(pos=self.pos, player_pos=self.player_pos)
+        self.get_status(pos=(self.coordx, self.coordy), player_pos=self.player_pos)
         if self.status != 'explode':
             self.rect.x += self.length1 / self.speed
             self.rect.y += self.length2 / self.speed
             self.coordx += self.length1 / self.speed
             self.coordy += self.length2 / self.speed
         self.animate()
+
+
+class Goblin_projectile(Flying_eye_projectile):
+    def import_assets(self):
+        path = './goblin_projectile/'
+
+        for animation in self.animations.keys():
+            full_path = path + animation
+            self.animations[animation] = import_folder(full_path)
+
+
+class Mushroom_projectile(Flying_eye_projectile):
+    def import_assets(self):
+        path = './mushroom_projectile/'
+
+        for animation in self.animations.keys():
+            full_path = path + animation
+            self.animations[animation] = import_folder(full_path)

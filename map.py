@@ -120,7 +120,7 @@ class Wall(pygame.sprite.Sprite):
 
 class Map:  # 38 20
     # def __init__(self, width=38, height=22):
-    def __init__(self, width=80, height=50):
+    def __init__(self, width=30, height=20):
         self.width = width
         self.height = height
         self.cost_wall = 10
