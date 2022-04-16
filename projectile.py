@@ -46,7 +46,7 @@ class Flying_eye_projectile(pygame.sprite.Sprite):
             self.status = 'fly'
 
     def update(self):
-        #self.get_status(pos=self.pos, player_pos=self.player_pos)
+        self.get_status(pos=(self.coordx, self.coordy), player_pos=self.player_pos)
         if self.status != 'explode':
             self.rect.x += self.length1 / self.speed
             self.rect.y += self.length2 / self.speed

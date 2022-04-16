@@ -30,7 +30,7 @@ class GameManager:
         self.visible_sprites = None
         self.player = None
         self.mob1 = None
-        self.check = Flying_eye_projectile((WIDTH / 2, HEIGHT / 2 + 10), (WIDTH / 2, HEIGHT / 2))
+        #self.check = Flying_eye_projectile((WIDTH / 2, HEIGHT / 2 + 10), (WIDTH / 2, HEIGHT / 2))
 
     def init_map(self):
         tmp = Map()
@@ -68,14 +68,15 @@ class GameManager:
                 # check for closing window
                 if event.type == pygame.QUIT:
                     running = False
+
             if (
             sqrt((self.player.coordx - self.mob1.coordx) ** 2 + (self.player.coordy - self.mob1.coordy) ** 2)) <= 160:
-                if self.check.status == 'explode':
-                    self.check.kill()
-                    self.check = Flying_eye_projectile((self.mob1.coordx, self.mob1.coordy),
+                if self.mob1.projectile.status == 'explode':
+                    self.mob1.projectile.kill()
+                    self.mob1.create_projectile((self.mob1.coordx, self.mob1.coordy),
                                                        (self.player.coordx, self.player.coordy))
                 else:
-                    self.visible_sprites.custom_draw(self.check)
+                    self.visible_sprites.add(self.mob1.projectile)
 
             # Обновление
             # self.entities.update()

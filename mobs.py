@@ -31,11 +31,10 @@ class Flying_eye(pygame.sprite.Sprite):
         self.status = 'idle_right'
         self.attack_status = 0
         self.next_status = 0
-        self.projectile=Flying_eye_projectile(pos,player_pos)
+        self.projectile = Flying_eye_projectile(pos, player_pos)
 
     def import_assets(self):
         path = './img/img_mobs/flying_eye/'
-
 
         for animation in self.animations.keys():
             full_path = path + animation
@@ -69,8 +68,8 @@ class Flying_eye(pygame.sprite.Sprite):
     def get_status(self):
         if sqrt((self.coordx - self.playerx) ** 2 + (self.coordy - self.playery) ** 2) < 160:
             self.attack_status = 1
-            #self.projectile = Flying_eye_projectile((self.coordx, self.coordy), player_pos)
-            #self.projectile.status = 'fly'
+            # self.projectile = Flying_eye_projectile((self.coordx, self.coordy), player_pos)
+            # self.projectile.status = 'fly'
         if self.attack_status == 1:
             if self.status == 'idle_right':
                 self.status = 'attack_right'
@@ -107,6 +106,9 @@ class Flying_eye(pygame.sprite.Sprite):
                 else:
                     self.status = self.next_status
 
+    def create_projectile(self, mob_coords, player_coords):
+        self.projectile = Flying_eye_projectile(mob_coords, player_coords)
+
     def update(self):
         self.get_input()
         self.get_status()
@@ -137,3 +139,6 @@ class Goblin(Flying_eye):
         for animation in self.animations.keys():
             full_path = path + animation
             self.animations[animation] = import_folder(full_path)
+
+    def create_projectile(self, mob_coords, player_coords):
+        self.projectile = Goblin_projectile(mob_coords, player_coords)
