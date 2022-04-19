@@ -60,14 +60,20 @@ def a_star_search(dist, start, goal):
 
 
 class Wall(pygame.sprite.Sprite):
-    def __init__(self, pos, type, map_sprites, map, point):
-        super().__init__(map_sprites)
+    def __init__(self, pos, type, visible_sprites, obstacle_sprites, map, point):
+        super().__init__(visible_sprites)
         self.pos = pos
         self.map = map
         self.wall_type = self.get_wall_type(point, type)
+        self.obstacle_sprites = obstacle_sprites
         # self.wall_type = wall_type
         self.image = self.get_image()
         self.rect = self.image.get_rect(topleft=pos)
+        self.add_to_obstacle_sprites()
+
+    def add_to_obstacle_sprites(self):
+        if self.wall_type in ['horizontal', 'vertical']:
+            self.obstacle_sprites.add(self)
 
     def get_wall_type(self, point, type):
         ddx = [0, 1, 0, -1]
@@ -79,19 +85,18 @@ class Wall(pygame.sprite.Sprite):
                 check.append(self.map[y + ddy[i]][x + ddx[i]])
             else:
                 check.append(False)
-        if type is 'wall':
+        if type == 'wall':
             if check.count(True) == 0:
                 return 'empty'
-            elif (check[0] is True or check[2] is True) and check.count(True) == 1:
+            elif check.count(True) > 0:
                 return 'horizontal'
-            elif (check[1] is True or check[3] is True) and check.count(True) == 1:
-                return 'horizontal'
-                # print(type)
-                # return 'test'
             else:
                 return 'empty'
-        elif type is 'floor':
-            return 'floor'
+        elif type == 'floor':
+            if check.count(True) < 4:
+                return 'floor_near_wall'
+            else:
+                return 'floor_in_room'
 
     def get_image(self):
         # print(neighbors(self.map, self.point))
@@ -103,7 +108,7 @@ class Wall(pygame.sprite.Sprite):
         test2_path = './img/map/test2.png'
         if 'horizontal' in self.wall_type:
             return pygame.image.load(wall_horizontal_path).convert_alpha()
-        elif 'floor' in self.wall_type:
+        elif 'floor_near_wall' in self.wall_type or 'floor_in_room' in self.wall_type:
             return pygame.image.load(test2_path).convert_alpha()
         elif 'vertical' in self.wall_type:
             return pygame.image.load(wall_vertical_path).convert_alpha()
@@ -114,15 +119,18 @@ class Wall(pygame.sprite.Sprite):
 
 
 class Map:  # 38 20
-    def __init__(self, width=38, height=22):
+    # def __init__(self, width=38, height=22):
+    def __init__(self, width=30, height=20):
         self.width = width
         self.height = height
         self.cost_wall = 10
         self.cost_room = 5
         self.cost_room_wall = 15
         self.cost_frontier = 100000
-        self.tilesize = 32
-        self.map_sprites = CameraGroup()
+        self.tilesize = 40
+        self.visible_sprites = CameraGroup()
+        self.obstacle_sprites = pygame.sprite.Group()
+        self.walls = []
         self.map = self.generate_map()
 
     def draw_in_terminal(self):
@@ -305,12 +313,19 @@ class Map:  # 38 20
                 map[y][x] = (True if dist[y][x] == self.cost_room else False)
         return map
 
+    def get_spawn_coord_in_room(self):
+        while True:
+            rand_spawn = random.randint(0, len(self.walls))
+            spawn_point = self.walls[rand_spawn]
+            if spawn_point.wall_type == 'floor_in_room':
+                return spawn_point.pos
+
     def create_wall_sprites(self):
         for row_index, row in enumerate(self.map):
             for col_index, col in enumerate(row):
                 x = col_index * self.tilesize
                 y = row_index * self.tilesize
                 if col is True:
-                    Wall((x, y), 'floor', self.map_sprites, self.map, (row_index, col_index))
+                    self.walls.append(Wall((x, y), 'floor', self.visible_sprites, self.obstacle_sprites, self.map, (row_index, col_index)))
                 elif col is False:
-                    Wall((x, y), 'wall', self.map_sprites, self.map, (row_index, col_index))
+                    self.walls.append(Wall((x, y), 'wall', self.visible_sprites, self.obstacle_sprites, self.map, (row_index, col_index)))
