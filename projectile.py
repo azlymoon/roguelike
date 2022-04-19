@@ -39,7 +39,6 @@ class Flying_eye_projectile(pygame.sprite.Sprite):
             self.image = animation[int(self.frame_index)]
 
     def get_status(self, pos, player_pos):
-
         if (abs(self.coordx - self.player_pos[0]) < 10) and (abs(self.coordy - self.player_pos[1]) < 10):
             self.status = 'explode'
         else:
