@@ -315,7 +315,7 @@ class Map:  # 38 20
 
     def get_spawn_coord_in_room(self):
         while True:
-            rand_spawn = random.randint(0, len(self.walls))
+            rand_spawn = random.randint(0, len(self.walls) - 1)
             spawn_point = self.walls[rand_spawn]
             if spawn_point.wall_type == 'floor_in_room':
                 return spawn_point.pos
