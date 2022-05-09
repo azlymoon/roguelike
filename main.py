@@ -115,9 +115,4 @@ class GameManager:
                 # После отрисовки всего, переворачиваем экран
                 pygame.display.flip()
             pygame.quit()
-
-
-if __name__ == '__main__':
-    pygame.init()
-    Manager = GameManager()
-    Manager.run()
+show_menu()
