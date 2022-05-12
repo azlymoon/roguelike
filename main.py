@@ -62,9 +62,9 @@ class GameManager:
 
     def run(self):
         if self.state == 'menu':
+            self.init_map()
             show_menu(self)
         elif self.state == 'game_running':
-            self.init_map()
             # Отрисовка карты в консоль
             print('-' * 150)
             for y in range(len(self.map)):
