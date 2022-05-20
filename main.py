@@ -2,10 +2,13 @@ import pygame
 from Player import Player
 from map import Map
 from menu import show_menu, print_text, pause
+from health import show_health
+from inventory import Inventory
 from CameraGroup import CameraGroup
 from mobs import Flying_eye, Goblin, Mushroom
 from projectile import Flying_eye_projectile, Goblin_projectile, Mushroom_projectile
 from math import sqrt
+from time import sleep
 
 pygame.init()
 
@@ -28,6 +31,7 @@ class GameManager:
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         self.clock = pygame.time.Clock()
         self.entities = pygame.sprite.Group()
+        self.inventory = Inventory()
         self.state = "menu"
         self.map = None
         self.visible_sprites = None
@@ -45,9 +49,12 @@ class GameManager:
         # tmp.draw_in_terminal()
 
         self.player = Player(tmp.get_spawn_coord_in_room(), tmp.obstacle_sprites)
-        self.mob1 = Flying_eye(tmp.get_spawn_coord_in_room(), (self.player.coordx, self.player.coordy), tmp.obstacle_sprites)
-        self.mob2 = Goblin(tmp.get_spawn_coord_in_room(), (self.player.coordx, self.player.coordy), tmp.obstacle_sprites)
-        self.mob3 = Mushroom(tmp.get_spawn_coord_in_room(), (self.player.coordx, self.player.coordy), tmp.obstacle_sprites)
+        self.mob1 = Flying_eye(tmp.get_spawn_coord_in_room(), (self.player.coordx, self.player.coordy),
+                               tmp.obstacle_sprites)
+        self.mob2 = Goblin(tmp.get_spawn_coord_in_room(), (self.player.coordx, self.player.coordy),
+                           tmp.obstacle_sprites)
+        self.mob3 = Mushroom(tmp.get_spawn_coord_in_room(), (self.player.coordx, self.player.coordy),
+                             tmp.obstacle_sprites)
         self.visible_sprites.add(self.player)
         self.visible_sprites.add(self.mob1)
         self.visible_sprites.add(self.mob2)
@@ -105,6 +112,22 @@ class GameManager:
                 # self.map_surface.draw(self.screen)
 
                 self.visible_sprites.custom_draw(self.player)
+
+                show_health(self)
+
+                self.inventory.draw_panel(self)
+
+                if keys[pygame.K_i]:
+                    self.inventory.draw_whole(self)
+                if keys[pygame.K_2]:
+                    self.inventory.increase('sword')
+                    sleep(0.1)
+                if keys[pygame.K_3]:
+                    self.inventory.increase('shield')
+                    sleep(0.1)
+                if keys[pygame.K_4]:
+                    self.inventory.increase('coke')
+                    sleep(0.1)
 
                 # self.entities.draw(self.screen)
 

@@ -5,8 +5,8 @@ class Button:
     def __init__(self, width, height):
         self.width = width
         self.height = height
-        self.inactive_clr = (13, 162, 58)
-        self.active_clr = (23, 204, 58)
+        self.inactive_clr = (184, 188, 163)
+        self.active_clr = (255, 253, 208)
 
     def draw(self, GameManager, x, y, message, action=None, font_size=30):
         mouse = pygame.mouse.get_pos()
@@ -27,15 +27,15 @@ class Button:
         else:
             pygame.draw.rect(GameManager.screen, self.inactive_clr, (x, y, self.width, self.height))
 
-        print_text(GameManager, message=message, x=x+10, y=y+10, font_size=font_size)
+        print_text(GameManager, message=message, x=x+20, y=y+14, font_size=font_size)
 
 
 def show_menu(GameManager):
     menu_bckgr = pygame.image.load('./img/menu/menu.jpg')
     menu_bckgr = pygame.transform.scale(menu_bckgr, (1280, 720))
 
-    start_btn = Button(265, 80)
-    quit_btn = Button(245, 80)
+    start_btn = Button(480, 150)
+    quit_btn = Button(440, 150)
 
     show = True
 
@@ -46,15 +46,19 @@ def show_menu(GameManager):
                 quit()
 
         GameManager.screen.blit(menu_bckgr, (0, 0))
-        start_btn.draw(GameManager, 270, 200, 'start game', GameManager.start_game, 50)
-        quit_btn.draw(GameManager, 280, 300, 'quit game', quit, 50)
+        start_btn.draw(GameManager, 400, 150, 'start game', GameManager.start_game, 90)
+        pygame.draw.rect(GameManager.screen, (0, 0, 0), (400, 150, 480, 150), 8)
+        pygame.draw.rect(GameManager.screen, (255, 255, 255), (400, 150, 480, 150), 2)
+        quit_btn.draw(GameManager, 420, 370, 'quit game', quit, 90)
+        pygame.draw.rect(GameManager.screen, (0, 0, 0), (420, 370, 440, 150), 8)
+        pygame.draw.rect(GameManager.screen, (255, 255, 255), (420, 370, 440, 150), 2)
 
         # pygame.GameManager.screen.update()
         pygame.display.flip()
         GameManager.clock.tick(30)
 
 
-def print_text(GameManager, message, x, y, font_color=(0, 0, 0), font_type='./img/menu/Empirecrown.ttf', font_size=30):
+def print_text(GameManager, message, x, y, font_color=(0, 0, 0), font_type='./img/menu/Empirecrown.ttf', font_size=64):
     font_type = pygame.font.Font(font_type, font_size)
     text = font_type.render(message, True, font_color)
     GameManager.screen.blit(text, (x, y))
@@ -68,10 +72,16 @@ def pause(GameManager):
                 pygame.quit()
                 quit()
 
-        print_text(GameManager, 'paused. press ENTER to continue', 160, 300)
+        pygame.draw.rect(GameManager.screen, (255, 255, 255), (140, 240, 1000, 213))
+        pygame.draw.rect(GameManager.screen, (184, 188, 163), (140, 240, 1000, 213), 8)
+        pygame.draw.rect(GameManager.screen, (0, 0, 0), (140, 240, 1000, 213), 2)
+        print_text(GameManager, 'paused. press ENTER to continue', 166, 260)
+        print_text(GameManager, 'or press SPACE to quit.', 322, 340)
         keys = pygame.key.get_pressed()
         if keys[pygame.K_RETURN]:
             paused = False
+        if keys[pygame.K_SPACE]:
+            quit()
 
         # pygame.screen.update()
         pygame.display.flip()
