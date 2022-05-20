@@ -35,15 +35,15 @@ class Inventory:
         self.resources[name].amount += 1
         print(self.resources[name].amount)
 
-    def update_whole(self):
-        for name, resource in self.resources.items():
-            if resource.amount != 0 and resource not in self.whole_inventory:
-                # self.whole_inventory.insert(self.whole_inventory.index(None), resource)
-                print(resource.amount)
-                self.whole_inventory[self.whole_inventory.index(None)] = resource
-                # self.whole_inventory.remove(None)
-            # print(self.resources[name].amount)
-        # print()
+    # def update_whole(self):
+    #     for name, resource in self.resources.items():
+    #         if resource.amount != 0 and resource not in self.whole_inventory:
+    #             # self.whole_inventory.insert(self.whole_inventory.index(None), resource)
+    #             print(resource.amount)
+    #             self.whole_inventory[self.whole_inventory.index(None)] = resource
+    #             # self.whole_inventory.remove(None)
+    #         # print(self.resources[name].amount)
+    #     # print()
 
     def draw_whole(self, GameManager):
         x = 30

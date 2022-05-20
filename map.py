@@ -67,7 +67,7 @@ class Wall(pygame.sprite.Sprite):
         self.wall_type = self.get_wall_type(point, type)
         self.obstacle_sprites = obstacle_sprites
         # self.wall_type = wall_type
-        self.image = self.get_image()
+        self.image = pygame.transform.scale(self.get_image(), (50, 50))
         self.rect = self.image.get_rect(topleft=pos)
         self.add_to_obstacle_sprites()
 
@@ -109,25 +109,25 @@ class Wall(pygame.sprite.Sprite):
         if 'horizontal' in self.wall_type:
             return pygame.image.load(wall_horizontal_path).convert_alpha()
         elif 'floor_near_wall' in self.wall_type or 'floor_in_room' in self.wall_type:
-            return pygame.image.load(test2_path).convert_alpha()
+            return pygame.image.load(floor_path).convert_alpha()
         elif 'vertical' in self.wall_type:
             return pygame.image.load(wall_vertical_path).convert_alpha()
         elif 'empty' in self.wall_type:
             return pygame.image.load(empty_path).convert_alpha()
-        elif 'test' in self.wall_type:
-            return pygame.image.load(test_path).convert_alpha()
+        # elif 'test' in self.wall_type:
+        #     return pygame.image.load(test_path).convert_alpha()
 
 
 class Map:  # 38 20
-    # def __init__(self, width=38, height=22):
-    def __init__(self, width=30, height=20):
+    def __init__(self, width=38, height=22):
+    # def __init__(self, width=30, height=20):
         self.width = width
         self.height = height
         self.cost_wall = 10
         self.cost_room = 5
         self.cost_room_wall = 15
         self.cost_frontier = 100000
-        self.tilesize = 40
+        self.tilesize = 48
         self.visible_sprites = CameraGroup()
         self.obstacle_sprites = pygame.sprite.Group()
         self.walls = []
