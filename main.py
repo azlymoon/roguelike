@@ -2,6 +2,7 @@ import pygame
 from Player import Player
 from map import Map
 from menu import show_menu, print_text, pause
+from menu import Button
 from health import show_health
 from inventory import Inventory
 from CameraGroup import CameraGroup
@@ -81,6 +82,8 @@ class GameManager:
             print('-' * 150)
 
             running = True
+            hold_left = False
+
             while running:
                 # Держим цикл на правильной скорости
                 self.clock.tick(FPS)
@@ -115,19 +118,29 @@ class GameManager:
 
                 show_health(self)
 
-                self.inventory.draw_panel(self)
+                # self.inventory.draw_panel(self)
 
-                if keys[pygame.K_i]:
+                mouse = pygame.mouse.get_pos()
+                click = pygame.mouse.get_pressed()
+
+                if click[0] and not hold_left:
+                    print(mouse)
+                    self.inventory.set_start_cell(mouse[0], mouse[1])
+                    hold_left = True
+                if hold_left and not click[0]:
+                    print(mouse)
+                    self.inventory.set_end_cell(mouse[0], mouse[1])
+                    hold_left = False
+
+                if keys[pygame.K_e]:
                     self.inventory.draw_whole(self)
-                if keys[pygame.K_2]:
-                    self.inventory.increase('sword')
-                    sleep(0.1)
-                if keys[pygame.K_3]:
-                    self.inventory.increase('shield')
-                    sleep(0.1)
+                    self.inventory.draw_whole_items(self)
+                    self.inventory.draw_whole_armour(self)
+                    self.inventory.increase_item('shield')
+
                 if keys[pygame.K_4]:
-                    self.inventory.increase('coke')
-                    sleep(0.1)
+                   self.inventory.increase('coke')
+                   sleep(0.1)
 
                 # self.entities.draw(self.screen)
 
