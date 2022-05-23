@@ -20,8 +20,8 @@ class Flying_eye_projectile(pygame.sprite.Sprite):
         # self.length2 = self.player.coordy - self.pos[1]
         self.coordx = pos[0]
         self.coordy = pos[1]
-        print(type(self.coordx))
-        print(type(self.player.coordx))
+        # print(type(self.coordx))
+        # print(type(self.player.coordx))
 
     def import_assets(self):
         path = './flying_eye_projectile/'
@@ -39,7 +39,6 @@ class Flying_eye_projectile(pygame.sprite.Sprite):
             self.image = animation[int(self.frame_index)]
 
     def get_status(self):
-
         if abs(self.coordx - self.player.coordx) < 10 or abs(self.coordy - self.player.coordy) < 10:
 
             self.status = 'explode'
