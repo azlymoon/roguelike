@@ -1,13 +1,11 @@
 import pygame
 from support import import_folder
-from math import sqrt
 
 
 class Flying_eye_projectile(pygame.sprite.Sprite):
-    def __init__(self, pos, player_pos):
+    def __init__(self, pos, player):
         pygame.sprite.Sprite.__init__(self)
-        self.pos = pos
-        self.player_pos = player_pos
+        #self.pos = pos
         self.animations = {'explode': [], 'fly': [],
                            }
 
@@ -15,13 +13,15 @@ class Flying_eye_projectile(pygame.sprite.Sprite):
         self.frame_index = 0
         self.image = self.animations['fly'][self.frame_index]
         self.rect = self.image.get_rect(topleft=pos)
-
+        self.player = player
         self.speed = 15
         self.status = 'fly'
-        self.length1 = self.player_pos[0] - self.pos[0]
-        self.length2 = self.player_pos[1] - self.pos[1]
-        self.coordx = self.pos[0]
-        self.coordy = self.pos[1]
+        # self.length1 = self.player.coordx - self.pos[0]
+        # self.length2 = self.player.coordy - self.pos[1]
+        self.coordx = pos[0]
+        self.coordy = pos[1]
+        print(type(self.coordx))
+        print(type(self.player.coordx))
 
     def import_assets(self):
         path = './flying_eye_projectile/'
@@ -38,20 +38,22 @@ class Flying_eye_projectile(pygame.sprite.Sprite):
                 self.frame_index = 0
             self.image = animation[int(self.frame_index)]
 
-    def get_status(self, pos, player_pos):
+    def get_status(self):
 
-        if (abs(self.coordx - self.player_pos[0]) < 10) and (abs(self.coordy - self.player_pos[1]) < 10):
+        if abs(self.coordx - self.player.coordx) < 10 or abs(self.coordy - self.player.coordy) < 10:
+
             self.status = 'explode'
+            self.player.health -= 1
         else:
             self.status = 'fly'
 
     def update(self):
-        self.get_status(pos=(self.coordx, self.coordy), player_pos=self.player_pos)
+        self.get_status()
         if self.status != 'explode':
-            self.rect.x += self.length1 / self.speed
-            self.rect.y += self.length2 / self.speed
-            self.coordx += self.length1 / self.speed
-            self.coordy += self.length2 / self.speed
+            self.rect.x += self.speed
+            self.rect.y += self.speed
+            self.coordx += self.speed
+            self.coordy += self.speed
         self.animate()
 
 
