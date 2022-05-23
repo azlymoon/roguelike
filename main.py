@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import pygame
 
 import inventory
@@ -110,13 +111,18 @@ class GameManager:
                     if event.type == pygame.QUIT:
                         running = False
                 for mob in self.mobs:
-                    if mob.projectile.status == "explode":
+                    if mob.health <= 0:
                         mob.projectile.kill()
-                    if (sqrt((self.player.coordx - mob.coordx) ** 2 + (self.player.coordy - mob.coordy) ** 2)) <= 160:
-                        if mob.projectile.status == 'explode':
-                            mob.create_projectile((mob.coordx, mob.coordy), (self.player.coordx, self.player.coordy))
-                        else:
-                            self.visible_sprites.add(mob.projectile)
+                        mob.kill()
+                        self.mobs.remove(mob)
+                    else:
+
+                        # print("статус из меню", mob.projectile.status)
+                        if mob.projectile is not None:
+                            if mob.projectile.status != 'explode':
+                                self.visible_sprites.add(mob.projectile)
+                            else:
+                                mob.projectile.kill()
                 keys = pygame.key.get_pressed()
                 if keys[pygame.K_ESCAPE]:
                     pause(self)

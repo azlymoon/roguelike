@@ -106,7 +106,7 @@ class Flying_eye(pygame.sprite.Sprite):
                     self.status = self.next_status
 
     def create_projectile(self, mob_coords, player_coords):
-        self.projectile = Flying_eye_projectile(mob_coords, player_coords)
+        self.projectile = Flying_eye_projectile(mob_coords, self.player)
 
     def collision(self, direction):
         if direction == 'horizontal':
@@ -150,7 +150,7 @@ class Goblin(Flying_eye):
             self.animations[animation] = import_folder(full_path)
 
     def create_projectile(self, mob_coords, player_coords):
-        self.projectile = Goblin_projectile(mob_coords, player_coords)
+        self.projectile = Goblin_projectile(mob_coords, self.player)
 
 
 class Mushroom(Flying_eye):
@@ -166,4 +166,4 @@ class Mushroom(Flying_eye):
             self.animations[animation] = import_folder(full_path)
 
     def create_projectile(self, mob_coords, player_coords):
-        self.projectile = Mushroom_projectile(mob_coords, player_coords)
+        self.projectile = Mushroom_projectile(mob_coords, self.player)
