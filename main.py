@@ -3,7 +3,7 @@ from Player import Player
 from map import Map
 from menu import show_menu, print_text, pause
 from menu import Button
-from health import show_health
+from panel import show_panel
 from inventory import Inventory
 from CameraGroup import CameraGroup
 from mobs import Flying_eye, Goblin, Mushroom
@@ -28,7 +28,7 @@ GREY = (47, 79, 79)
 
 class GameManager:
     def __init__(self):
-        pygame.display.set_caption("My Game")
+        pygame.display.set_caption("Escape the Castle")
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         self.clock = pygame.time.Clock()
         self.entities = pygame.sprite.Group()
@@ -116,7 +116,7 @@ class GameManager:
 
                 self.visible_sprites.custom_draw(self.player)
 
-                show_health(self)
+                show_panel(self)
 
                 # self.inventory.draw_panel(self)
 
@@ -135,8 +135,11 @@ class GameManager:
                 if keys[pygame.K_e]:
                     self.inventory.draw_whole(self)
                     self.inventory.draw_whole_items(self)
-                    self.inventory.draw_whole_armour(self)
                     self.inventory.increase_item('shield')
+                    self.inventory.increase_item('sword')
+                    self.inventory.increase_item('axe')
+                    self.inventory.increase_item('helmet')
+                    self.inventory.increase_item('chest')
 
                 if keys[pygame.K_4]:
                    self.inventory.increase('coke')

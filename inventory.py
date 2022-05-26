@@ -8,7 +8,6 @@ class Resource:
         self.amount = 0
         self.image = pygame.image.load(image_path)
 
-
 class Item:
     def __init__(self, name1, image_path1):
         self.name1 = name1
@@ -21,17 +20,16 @@ class Inventory:
             'coke': Resource('coke', './img/coke.png')
         }
         self.items = {
-            'helmet': Item('coke', './img/helmet.png'),
-            'chest': Item('coke', './img/chest.png'),
-            'shield': Item('coke', './img/shield.png'),
-            'axe': Item('coke', './img/axe.png'),
-            'sword': Item('coke', './img/sword.png')
+            'helmet': Item('helmet', './img/helmet.png'),
+            'chest': Item('chest', './img/chest.png'),
+            'shield': Item('shield', './img/shield.png'),
+            'axe': Item('axe', './img/axe.png'),
+            'sword': Item('sword', './img/sword.png')
         }
 
         # self.inventory_panel = [None] * 3
         self.whole_inventory = [None] * 4
-        self.whole_inventory_for_items = [None] * 6
-        self.whole_inventory_for_armour = [None] * 4
+        self.whole_inventory_for_items = [None] * 12
         self.start_cell = 0
         self.end_cell = 0
         self.start_cell1 = 0
@@ -70,49 +68,45 @@ class Inventory:
     #     # print()
 
     def draw_whole(self, GameManager):
-        x = 945
-        y = 295
+        x = 655
+        y = 515
         side = 60
         step = 75
 
-        # отрисовка основного инвентаря на 8 ячеек
-        pygame.draw.rect(GameManager.screen, (175, 190, 202), (930, 280, 315, 100))
-        pygame.draw.rect(GameManager.screen, (255, 255, 255), (930, 280, 315, 100), 8)
-        pygame.draw.rect(GameManager.screen, (0, 0, 0), (930, 280, 315, 100), 2)
-
-        # отрисовка ячейки для оружия
-        pygame.draw.rect(GameManager.screen, (175, 190, 202), (710, 295, 90, 105))
-        pygame.draw.rect(GameManager.screen, (255, 255, 255), (710, 295, 90, 105), 8)
-        pygame.draw.rect(GameManager.screen, (0, 0, 0), (710, 295, 90, 105), 2)
-        pygame.draw.rect(GameManager.screen, (200, 215, 227), (725, 310, side, side))
-        print_text(GameManager, "weapon", 725, 369, font_size=18)
-
-        # отрисовка ячейки для щита
-        pygame.draw.rect(GameManager.screen, (175, 190, 202), (710, 430, 90, 105))
-        pygame.draw.rect(GameManager.screen, (255, 255, 255), (710, 430, 90, 105), 8)
-        pygame.draw.rect(GameManager.screen, (0, 0, 0), (710, 430, 90, 105), 2)
-        pygame.draw.rect(GameManager.screen, (200, 215, 227), (725, 460, side, side))
-        print_text(GameManager, "shield", 729, 437, font_size=18)
+        # отрисовка основного инвентаря на 4 ячейки
+        pygame.draw.rect(GameManager.screen, (175, 190, 202), (640, 500, 315, 100))
+        pygame.draw.rect(GameManager.screen, (255, 255, 255), (640, 500, 315, 100), 8)
+        pygame.draw.rect(GameManager.screen, (0, 0, 0), (640, 500, 315, 100), 2)
 
         for cell in self.whole_inventory:
             # print(cell.amount)
             pygame.draw.rect(GameManager.screen, (200, 215, 227), (x, y, side, side))
             if cell is not None:
                 GameManager.screen.blit(cell.image, (x + 5, y + 5))
-                print_text(GameManager, str(cell.amount), x + 27, y + 60, font_size=18)
+                print_text(GameManager, str(cell.amount), x + 27, y + 60, (0, 0, 0), font_size=18)
 
             x += step
 
     def draw_whole_items(self, GameManager):
-        x = 945
-        y = 415
+        x = 655
+        y = 255
         side = 60
         step = 75
 
-        # отрисовка основного инвентаря на 8 ячеек
-        pygame.draw.rect(GameManager.screen, (175, 190, 202), (930, 400, 240, 165))
-        pygame.draw.rect(GameManager.screen, (255, 255, 255), (930, 400, 240, 165), 8)
-        pygame.draw.rect(GameManager.screen, (0, 0, 0), (930, 400, 240, 165), 2)
+        # отрисовка инвентаря для оружия и брони на 10 ячеек
+        pygame.draw.rect(GameManager.screen, (175, 190, 202), (640, 240, 165, 240))
+        pygame.draw.rect(GameManager.screen, (255, 255, 255), (640, 240, 165, 240), 8)
+        pygame.draw.rect(GameManager.screen, (0, 0, 0), (640, 240, 165, 240), 2)
+
+        pygame.draw.rect(GameManager.screen, (175, 190, 202), (820, 220, 165, 260))
+        pygame.draw.rect(GameManager.screen, (255, 255, 255), (820, 220, 165, 260), 8)
+        pygame.draw.rect(GameManager.screen, (0, 0, 0), (820, 220, 165, 260), 2)
+
+        # отрисовка текста для брони
+        print_text(GameManager, "armour", 835, 226, (0, 0, 0), font_size=18)
+
+        # отрисовка текста для оружия
+        print_text(GameManager, "weapon", 910, 226, (0, 0, 0), font_size=18)
 
         for cell1 in self.whole_inventory_for_items:
             # print(cell.amount)
@@ -120,102 +114,59 @@ class Inventory:
             if cell1 is not None:
                 GameManager.screen.blit(cell1.image1, (x + 5, y + 5))
 
-            x += step
-
-            if x == 1170:
-                x = 945
-                y += step
-
-    def draw_whole_armour(self, GameManager):
-        x = 825
-        y = 235
-        side = 60
-        step = 75
-
-        # отрисовка амуниции на 4 ячейки
-        pygame.draw.rect(GameManager.screen, (175, 190, 202), (810, 205, 90, 330))
-        pygame.draw.rect(GameManager.screen, (255, 255, 255), (810, 205, 90, 330), 8)
-        pygame.draw.rect(GameManager.screen, (0, 0, 0), (810, 205, 90, 330), 2)
-        print_text(GameManager, "armour", 825, 210, font_size=18)
-
-        for cell2 in self.whole_inventory_for_armour:
-            # print(cell.amount)
-            pygame.draw.rect(GameManager.screen, (200, 215, 227), (x, y, side, side))
-
             y += step
 
+            if y == 480:
+                y = 255
+                if x == 730:
+                    x = 760
+                    x += step
+                else:
+                    x += step
+
+        pygame.draw.rect(GameManager.screen, (175, 190, 202), (905, 325, 75, 75))
+
+        # отрисовка текста для щита
+        print_text(GameManager, "shield", 913, 379, (0, 0, 0), font_size=18)
+
+    # def draw_whole_armour(self, GameManager):
+
     def set_start_cell(self, mouse_x, mouse_y):
-        start_x = 945
-        start_y = 415
-        step = 75
+        start_x = 655
+        start_y = 255
+        step = 85
         side = 60
 
-        for y in range(0, 2):
-            for x in range(0, 3):
+        for y in range(0, 3):
+            for x in range(0, 4):
                 cell_x = start_x + x * step
                 cell_y = start_y + y * step
 
                 if cell_x <= mouse_x <= cell_x + side and cell_y <= mouse_y <= cell_y + side:
-                    self.start_cell = y * 3 + x
-                    print("Start " + str(y * 3 + x))
+                    self.start_cell = x * 3 + y
+                    print("Start " + str(x * 3 + y))
                     return
                 # print("Cell #{0} is ({1}, {2})".format(y * 4 + x, x, y))
                 # print("x: [{0}, {1}], y: [{2}, {3}]".format(cell_x, cell_x + side, cell_y, cell_y + side))
 
-        start_x1 = 825
-        start_y1 = 235
-        step = 75
-        side = 60
-
-        for y1 in range(0, 4):
-            for x1 in range(0, 1):
-                cell_x1 = start_x1 + x1 * step
-                cell_y1 = start_y1 + y1 * step
-
-                if cell_x1 <= mouse_x <= cell_x1 + side and cell_y1 <= mouse_y <= cell_y1 + side:
-                    self.start_cell = y1
-                    print("End " + str(y1))
-                    return
-
     def set_end_cell(self, mouse_x, mouse_y):
-        start_x = 945
-        start_y = 415
-        step = 75
+        start_x = 655
+        start_y = 255
+        step = 85
         side = 60
 
-        for y in range(0, 2):
-            for x in range(0, 3):
+        for y in range(0, 3):
+            for x in range(0, 4):
                 cell_x = start_x + x * step
                 cell_y = start_y + y * step
 
                 if cell_x <= mouse_x <= cell_x + side and cell_y <= mouse_y <= cell_y + side:
-                    self.end_cell = y * 3 + x
-                    print("End " + str(y * 3 + x))
+                    self.end_cell = x * 3 + y
+                    print("End " + str(x * 3 + y))
                     self.swap_cells()
-                    return
-
-        start_x1 = 825
-        start_y1 = 235
-        step = 75
-        side = 60
-
-        for y1 in range(0, 4):
-            for x1 in range(0, 1):
-                cell_x1 = start_x1 + x1 * step
-                cell_y1 = start_y1 + y1 * step
-
-                if cell_x1 <= mouse_x <= cell_x1 + side and cell_y1 <= mouse_y <= cell_y1 + side:
-                    self.end_cell1 = y1
-                    print("End " + str(y1))
-                    self.swap_cells_armour()
                     return
 
     def swap_cells(self):
         temp = self.whole_inventory_for_items[self.end_cell]
         self.whole_inventory_for_items[self.end_cell] = self.whole_inventory_for_items[self.start_cell]
         self.whole_inventory_for_items[self.start_cell] = temp
-
-    def swap_cells_armour(self):
-        temp1 = self.whole_inventory_for_armour[self.end_cell1]
-        self.whole_inventory_for_armour[self.end_cell1] = self.whole_inventory_for_armour[self.start_cell1]
-        self.whole_inventory_for_armour[self.start_cell1] = temp1
