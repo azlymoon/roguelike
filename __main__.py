@@ -1,10 +1,10 @@
 import pygame
 from Player import Player
 from map import Map
-# from CameraGroup import CameraGroup
+from CameraGroup import CameraGroup
 from mobs import Flying_eye, Goblin, Mushroom
 from projectile import Flying_eye_projectile, Goblin_projectile, Mushroom_projectile
-from math import sqrt, trunc
+from math import sqrt
 
 WIDTH = 1280
 HEIGHT = 720
@@ -42,18 +42,18 @@ class GameManager:
         # tmp.draw_in_terminal()
 
         self.player = Player(tmp.get_spawn_coord_in_room(), tmp.obstacle_sprites)
-        self.mob1 = Flying_eye(tmp.get_spawn_coord_in_room(), self.player,
-                               tmp.obstacle_sprites)
-        self.mob2 = Goblin(tmp.get_spawn_coord_in_room(), self.player,
-                           tmp.obstacle_sprites)
-        self.mob3 = Mushroom(tmp.get_spawn_coord_in_room(), self.player,
-                             tmp.obstacle_sprites)
+        # self.mob1 = Flying_eye(tmp.get_spawn_coord_in_room(), (self.player.coordx, self.player.coordy), tmp.obstacle_sprites)
+        # self.mob2 = Goblin(tmp.get_spawn_coord_in_room(), (self.player.coordx, self.player.coordy), tmp.obstacle_sprites)
+        # self.mob3 = Mushroom(tmp.get_spawn_coord_in_room(), (self.player.coordx, self.player.coordy), tmp.obstacle_sprites)
+        self.mob1 = Flying_eye(tmp.get_spawn_coord_in_room(), self.player, tmp.obstacle_sprites)
+        #self.mob2 = Goblin(tmp.get_spawn_coord_in_room(), self.player, tmp.obstacle_sprites)
+        self.mob3 = Mushroom(tmp.get_spawn_coord_in_room(), self.player, tmp.obstacle_sprites)
         self.visible_sprites.add(self.player)
         self.visible_sprites.add(self.mob1)
-        self.visible_sprites.add(self.mob2)
+        #self.visible_sprites.add(self.mob2)
         self.visible_sprites.add(self.mob3)
         self.mobs.append(self.mob1)
-        self.mobs.append(self.mob2)
+        #self.mobs.append(self.mob2)
         self.mobs.append(self.mob3)
         self.set_state("game_running")
 
@@ -72,26 +72,20 @@ class GameManager:
         print('-' * 150)
 
         running = True
-        while running and self.player.health > 0:
+        while running:
             # Держим цикл на правильной скорости
             self.clock.tick(FPS)
             # Ввод процесса (события)
             for event in pygame.event.get():
                 # check for closing window
-                if event.type == pygame.QUIT:
+                if event.type == pygame.QUIT or self.player.health<=0:
                     running = False
             for mob in self.mobs:
-
+                mob.projectile.kill()
                 if mob.projectile.status == "explode":
                     mob.projectile.kill()
-                    # self.player.health -= mob.projectile.hit_status
-
                 if (
-                        sqrt((self.player.coordx - mob.coordx) ** 2 + (
-                                self.player.coordy - mob.coordy) ** 2)) <= 160 \
-                        and \
-                        trunc(mob.frame_index) == len(mob.animations[mob.status]) - 1:
-
+                        sqrt((self.player.coordx - mob.coordx) ** 2 + (self.player.coordy - mob.coordy) ** 2)) <= 160:
                     if mob.projectile.status == 'explode':
                         mob.projectile.kill()
                         mob.create_projectile((mob.coordx, mob.coordy), (self.player.coordx, self.player.coordy))

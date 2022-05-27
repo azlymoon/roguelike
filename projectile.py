@@ -1,11 +1,12 @@
 import pygame
 from support import import_folder
+from math import sqrt, copysign
 
 
 class Flying_eye_projectile(pygame.sprite.Sprite):
     def __init__(self, pos, player):
         pygame.sprite.Sprite.__init__(self)
-        #self.pos = pos
+        # self.pos = pos
         self.animations = {'explode': [], 'fly': [],
                            }
 
@@ -14,12 +15,18 @@ class Flying_eye_projectile(pygame.sprite.Sprite):
         self.image = self.animations['fly'][self.frame_index]
         self.rect = self.image.get_rect(topleft=pos)
         self.player = player
-        self.speed = 15
+        self.speedx = 7
+        self.speedy = 7
         self.status = 'fly'
+        self.living_time = 0
+
+        # self.cur_speed=15
         # self.length1 = self.player.coordx - self.pos[0]
         # self.length2 = self.player.coordy - self.pos[1]
         self.coordx = pos[0]
         self.coordy = pos[1]
+        self.direction = pygame.math.Vector2(0, 0)
+        self.length = sqrt((self.player.coordx - self.coordx) ** 2 + (self.player.coordy - self.coordy) ** 2)
         # print(type(self.coordx))
         # print(type(self.player.coordx))
 
@@ -39,20 +46,26 @@ class Flying_eye_projectile(pygame.sprite.Sprite):
             self.image = animation[int(self.frame_index)]
 
     def get_status(self):
-        if abs(self.coordx - self.player.coordx) < 10 or abs(self.coordy - self.player.coordy) < 10:
-
+        sign = lambda a: 1 if a > 0 else -1 if a < 0 else 0
+        if self.living_time > self.length / self.speedy:
             self.status = 'explode'
-            self.player.health -= 1
+            self.living_time = 0
+            if abs(self.player.coordx - self.coordx) < 10:
+                self.player.health -= 1
+
         else:
             self.status = 'fly'
+            self.direction.x = sign(self.player.coordx - self.coordx)
+            self.direction.y = sign(self.player.coordy - self.coordy)
+            self.living_time += 1
 
     def update(self):
         self.get_status()
         if self.status != 'explode':
-            self.rect.x += self.speed
-            self.rect.y += self.speed
-            self.coordx += self.speed
-            self.coordy += self.speed
+            self.rect.x += self.direction.x * self.speedx
+            self.rect.y += self.direction.y * self.speedy
+            self.coordx += self.direction.x * self.speedx
+            self.coordy += self.direction.y * self.speedy
         self.animate()
 
 
