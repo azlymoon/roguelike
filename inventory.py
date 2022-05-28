@@ -1,6 +1,14 @@
 import pygame
 from menu import print_text
 
+health_img = pygame.image.load('./img/menu/heart.png')
+health_img = pygame.transform.scale(health_img, (32, 32))
+
+weapon_img = pygame.image.load('./img/menu/weapon.png')
+weapon_img = pygame.transform.scale(weapon_img, (40, 40))
+
+armour_img = pygame.image.load('./img/menu/armour.png')
+armour_img = pygame.transform.scale(armour_img, (34, 34))
 
 class Resource:
     def __init__(self, name, image_path):
@@ -8,24 +16,37 @@ class Resource:
         self.amount = 0
         self.image = pygame.image.load(image_path)
 
-class Item:
-    def __init__(self, name1, image_path1):
-        self.name1 = name1
-        self.image1 = pygame.image.load(image_path1)
+
+class Item(pygame.sprite.Sprite):
+    def __init__(self, pos, name, image_path1, item_sprites):
+        pygame.sprite.Sprite.__init__(self)
+        self.name = name
+        self.pos = pos
+        self.image = pygame.image.load(image_path1)
+        # self.image = pygame.transform.scale(self.image, (40, 40))
+        self.rect = self.image.get_rect(topleft=pos)
+        self.item_sprites = item_sprites
+        self.add_to_item_sprites()
+
+    def add_to_item_sprites(self):
+        self.item_sprites.add(self)
+
+    def update(self):
+        pass
 
 
 class Inventory:
-    def __init__(self):
-        self.resources = {
-            'coke': Resource('coke', './img/coke.png')
-        }
-        self.items = {
-            'helmet': Item('helmet', './img/helmet.png'),
-            'chest': Item('chest', './img/chest.png'),
-            'shield': Item('shield', './img/shield.png'),
-            'axe': Item('axe', './img/axe.png'),
-            'sword': Item('sword', './img/sword.png')
-        }
+    def __init__(self, GameManager):
+        # self.resources = {
+        #     'coke': Resource('coke', './img/coke.png')
+        # }
+        # self.items = {
+        #     'helmet': Item('helmet', './img/helmet.png'),
+        #     'chest': Item('chest', './img/chest.png'),
+        #     'shield': Item('shield', './img/shield.png'),
+        #     'axe': Item('axe', './img/axe.png'),
+        #     'sword': Item('sword', './img/sword.png')
+        # }
 
         # self.inventory_panel = [None] * 3
         self.whole_inventory = [None] * 4
@@ -34,28 +55,29 @@ class Inventory:
         self.end_cell = 0
         self.start_cell1 = 0
         self.end_cell1 = 0
+        self.GameManager = GameManager
 
-    def get_amount(self, name):
-        try:
-            return self.resources[name].amount
-        except KeyError:
-            return -1
+    # def get_amount(self, name):
+    #     try:
+    #         return self.resources[name].amount
+    #     except KeyError:
+    #         return -1
 
-    def increase(self, name):
+    # def increase(self, name):
+    #     # self.resources[name].amount += 1
+    #     # print(self.resources[name].amount)
+    #     # self.update_whole()
+    #     if self.resources[name] not in self.whole_inventory:
+    #         self.whole_inventory[self.whole_inventory.index(None)] = self.resources[name]
+    #     self.resources[name].amount += 1
+    #     # print(self.resources[name].amount)
+
+    # def increase_item(self, name1):
         # self.resources[name].amount += 1
         # print(self.resources[name].amount)
         # self.update_whole()
-        if self.resources[name] not in self.whole_inventory:
-            self.whole_inventory[self.whole_inventory.index(None)] = self.resources[name]
-        self.resources[name].amount += 1
-        # print(self.resources[name].amount)
-
-    def increase_item(self, name1):
-        # self.resources[name].amount += 1
-        # print(self.resources[name].amount)
-        # self.update_whole()
-        if self.items[name1] not in self.whole_inventory_for_items:
-            self.whole_inventory_for_items[self.whole_inventory_for_items.index(None)] = self.items[name1]
+        # if self.items[name1] not in self.whole_inventory_for_items:
+        #     self.whole_inventory_for_items[self.whole_inventory_for_items.index(None)] = self.items[name1]
 
     # def update_whole(self):
     #     for name, resource in self.resources.items():
@@ -112,7 +134,7 @@ class Inventory:
             # print(cell.amount)
             pygame.draw.rect(GameManager.screen, (200, 215, 227), (x, y, side, side))
             if cell1 is not None:
-                GameManager.screen.blit(cell1.image1, (x + 5, y + 5))
+                GameManager.screen.blit(cell1.image, (x + 5, y + 5))
 
             y += step
 
@@ -170,3 +192,30 @@ class Inventory:
         temp = self.whole_inventory_for_items[self.end_cell]
         self.whole_inventory_for_items[self.end_cell] = self.whole_inventory_for_items[self.start_cell]
         self.whole_inventory_for_items[self.start_cell] = temp
+
+    def show_panel(self):
+        x = y = 15
+        step = 45
+        # pygame.draw.rect(GameManager.screen, (255, 255, 255), (10, 10, 235, 85))
+        # pygame.draw.rect(GameManager.screen, (184, 188, 163), (10, 10, 235, 85), 8)
+        # pygame.draw.rect(GameManager.screen, (0, 0, 0), (10, 10, 235, 85), 2)
+        self.GameManager.screen.blit(health_img, (x - 2, y - 2))
+        print_text(self.GameManager, str(self.GameManager.player.health), x + step, y - 5, (255, 255, 255),
+                   font_size=30)
+
+        self.GameManager.screen.blit(weapon_img, (x - 5, y + step - 7))
+        if self.whole_inventory_for_items[9] is not None:
+            # self.GameManager.player.weapon += 80
+            print_text(self.GameManager, str(self.GameManager.player.weapon + 80), x + step, y - 5 + step,
+                       (255, 255, 255), font_size=30)
+        else:
+            print_text(self.GameManager, str(self.GameManager.player.weapon), x + step, y - 5 + step,
+                       (255, 255, 255), font_size=30)
+
+        self.GameManager.screen.blit(armour_img, (x - 3, y + 2 * step - 2))
+        if self.whole_inventory_for_items[11] is not None:
+            print_text(self.GameManager, str(self.GameManager.player.armour + 50), x + step, y - 5 + 2 * step,
+                       (255, 255, 255), font_size=30)
+        else:
+            print_text(self.GameManager, str(self.GameManager.player.armour), x + step, y - 5 + 2 * step,
+                       (255, 255, 255), font_size=30)
