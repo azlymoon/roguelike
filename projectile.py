@@ -53,18 +53,18 @@ class Flying_eye_projectile(pygame.sprite.Sprite):
                 self.frame_index = 0
             self.image = animation[int(self.frame_index)]
 
-    def get_status(self):
+    # def get_status(self):
 
         # if self.living_time > self.length / sqrt(self.speedy**2+self.speedx**2):
         #     self.status = 'explode'
         #     self.living_time = 0
-        if self.living_time < self.length / self.speed:
-            self.status = 'fly'
-            self.living_time += 1
-        else:
-            # if abs(self.player.coordx - self.coordx) <= 3 and abs(self.player.coordy - self.coordy) <= 3:
-            #     self.player.health -= 1
-            self.status = 'explode'
+        # if self.living_time < self.length / self.speed:
+        #     self.status = 'fly'
+        #     self.living_time += 1
+        # else:
+        #     # if abs(self.player.coordx - self.coordx) <= 3 and abs(self.player.coordy - self.coordy) <= 3:
+        #     #     self.player.health -= 1
+        #     self.status = 'explode'
 
         # else:
         #     self.status = 'fly'
@@ -72,11 +72,18 @@ class Flying_eye_projectile(pygame.sprite.Sprite):
         #     self.direction.y = sign(self.target_coords[1] - self.coordy)
         #     self.living_time += 1
 
+    def collision_wall(self):
+        for wall in self.GameManager.obstacle_sprites:
+            if wall.rect.colliderect(self.rect):
+                self.status = 'explode'
+                self.kill()
+
     def update(self):
-        self.get_status()
+        # self.get_status()
         # print("статус из прожектайла", self.status)
         # print("коорды из прожектайла", self.coordx, self.coordy, self.player.coordx, self.player.coordy,
         # self.target_coords)
+        self.collision_wall()
         if self.status != 'explode':
             self.pos += self.direction.normalize() * self.speed
             self.rect.center = (round(self.pos.x), round(self.pos.y))

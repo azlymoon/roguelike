@@ -24,7 +24,7 @@ class Player(pygame.sprite.Sprite):
 
         self.direction = pygame.math.Vector2(0, 0)
         self.speed = 8
-        self.health = 1000000000000000000
+        self.health = 100
         self.weapon = 100
         self.armour = 100
 
@@ -169,7 +169,11 @@ class Player(pygame.sprite.Sprite):
     def collision_projectile(self):
         for projectile in self.GameManager.projectile_sprites:
             if projectile.rect.colliderect(self.rect):
-                self.health -= 10
+                if self.armour > 0:
+                    self.armour -= 20
+                else:
+                    self.health -= 10
+                projectile.status = 'explode'
                 projectile.kill()
 
     def check_health(self):

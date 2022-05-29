@@ -45,6 +45,7 @@ class GameManager:
         self.map = None
         self.map_obj = None
         self.visible_sprites = None
+        self.obstacle_sprites = None
         self.player = None
         self.mob1 = None
         self.mob2 = None
@@ -56,6 +57,7 @@ class GameManager:
         self.map_obj.create_wall_sprites()
         self.visible_sprites = self.map_obj.visible_sprites
         self.map = self.map_obj.get_map()
+        self.obstacle_sprites = self.map_obj.obstacle_sprites
         # tmp.draw_in_terminal()
         self.player = Player(self.map_obj.get_spawn_coord_in_room(), self.map_obj.obstacle_sprites, self)
         self.mob1 = Flying_eye(self.map_obj.get_spawn_coord_in_room(), self.player,
@@ -117,8 +119,8 @@ class GameManager:
                     if event.type == pygame.QUIT:
                         self.game_running = False
                 for mob in self.mobs:
-                    print(mob.rect.x, mob.rect.y, self.player.rect.x, self.player.rect.y)
-                    print(sqrt((mob.rect.x - self.player.rect.x) ** 2 + (mob.rect.y - self.player.rect.y) ** 2))
+                    # print(mob.rect.x, mob.rect.y, self.player.rect.x, self.player.rect.y)
+                    # print(sqrt((mob.rect.x - self.player.rect.x) ** 2 + (mob.rect.y - self.player.rect.y) ** 2))
                     if mob.health <= 0:
                         # mob.projectile.kill()
                         # mob.kill()
@@ -131,6 +133,8 @@ class GameManager:
                                 self.visible_sprites.add(mob.projectile)
                             else:
                                 mob.projectile.kill()
+                if not self.mobs:
+                    self.game_running = False
                 keys = pygame.key.get_pressed()
                 if keys[pygame.K_ESCAPE]:
                     pause(self)

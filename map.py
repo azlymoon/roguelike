@@ -119,7 +119,7 @@ class Wall(pygame.sprite.Sprite):
 
 
 class Map:  # 38 20
-    def __init__(self, width=60, height=60):
+    def __init__(self, width=38, height=20):
     # def __init__(self, width=30, height=20):
         self.width = width
         self.height = height
@@ -132,7 +132,7 @@ class Map:  # 38 20
         self.obstacle_sprites = pygame.sprite.Group()
         self.walls = []
         self.spawn_coords = []
-        self.spawn_dist = 5
+        self.spawn_dist = 3
         self.map = self.generate_map()
 
     def draw_in_terminal(self):

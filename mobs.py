@@ -38,7 +38,7 @@ class Flying_eye(pygame.sprite.Sprite):
 
         # self.projectile.status = 'ex'
         self.obstacle_sprites = obstacle_sprites
-        self.move_time = 1
+        self.move_time = 30
 
     def import_assets(self):
         path = './flying_eye/'
@@ -56,14 +56,15 @@ class Flying_eye(pygame.sprite.Sprite):
             self.image = animation[int(self.frame_index)]
 
     def get_input(self):
-
-        if self.move_time % 151 == 0:
+        print(self.move_time % 30)
+        if self.move_time % 30 == 0:
             self.direction.x = random.randint(-1, 1)
             self.direction.y = random.randint(-1, 1)
-            self.move_time = 0
+            self.move_time = 1
         else:
-            self.direction.x = 0
-            self.direction.y = 0
+            print(self.move_time)
+            # self.direction.x = 0
+            # self.direction.y = 0
             self.move_time += 1
 
     def get_status(self):
@@ -147,7 +148,7 @@ class Flying_eye(pygame.sprite.Sprite):
 
     def update(self):
         # print(self.coordx, self.coordy, self.player.coordx, self.player.coordy)
-        # self.get_input()
+        self.get_input()
         self.get_status()
         # print(self.status)
         self.rect.x += self.direction.x * self.speed
