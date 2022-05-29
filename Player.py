@@ -1,5 +1,6 @@
 import pygame
 from support import import_folder
+
 WIDTH = 32
 HEIGHT = 32
 
@@ -18,7 +19,7 @@ class Player(pygame.sprite.Sprite):
         self.image = self.animations['idle_right'][self.frame_index]
 
         self.rect = self.image.get_rect(topleft=pos)
-
+        self.mobs = None
         # player movement
 
         self.direction = pygame.math.Vector2(0, 0)
@@ -39,6 +40,9 @@ class Player(pygame.sprite.Sprite):
         for animation in self.animations.keys():
             full_path = path + animation
             self.animations[animation] = import_folder(full_path)
+
+    def give_pos_player(self):
+        return [self.coordx, self.coordy]
 
     def animate(self):
         if self.status != '':
@@ -72,21 +76,36 @@ class Player(pygame.sprite.Sprite):
             self.direction.y = 0
             self.attack_status = 0
 
+    def get_mobs(self, mobs):
+        self.mobs = mobs
+
     def get_status(self):
         if self.attack_status == 1:
             if self.status in ['idle_right', 'run_right']:
+                for mob in self.mobs:
+                    if 30 >= mob.coordx - self.coordx > 0 and abs(mob.coordy - self.coordy) <= 20:
+                        mob.health -= 1
                 self.status = 'attack_right'
                 self.next_status = 'idle_right'
                 self.attack_status = 0
             elif self.status in ['idle_left', 'run_left']:
+                for mob in self.mobs:
+                    if 30 >= self.coordx - mob.coordx > 0 and abs(mob.coordy - self.coordy) <= 20:
+                        mob.health -= 1
                 self.status = 'attack_left'
                 self.next_status = 'idle_left'
                 self.attack_status = 0
             elif self.status in ['idle_up', 'run_up']:
+                for mob in self.mobs:
+                    if abs(mob.coordx - self.coordx) <= 20 and 30 >= mob.coordy - self.coordy > 0:
+                        mob.health -= 1
                 self.status = 'attack_up'
                 self.next_status = 'idle_up'
                 self.attack_status = 0
             elif self.status in ['idle_down', 'run_down']:
+                for mob in self.mobs:
+                    if abs(mob.coordx - self.coordx) <= 20 and 30 >= self.coordy - mob.coordy > 0:
+                        mob.health -= 1
                 self.status = 'attack_down'
                 self.next_status = 'idle_down'
                 self.attack_status = 0
