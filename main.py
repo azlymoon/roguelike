@@ -1,11 +1,17 @@
 import pygame
+
+import inventory
 from Player import Player
 from map import Map
 from menu import show_menu, print_text, pause
+from menu import Button
+# from panel import show_panel
+from inventory import Inventory, Item
 from CameraGroup import CameraGroup
 from mobs import Flying_eye, Goblin, Mushroom
 from projectile import Flying_eye_projectile, Goblin_projectile, Mushroom_projectile
 from math import sqrt
+from time import sleep
 
 pygame.init()
 
@@ -24,11 +30,17 @@ GREY = (47, 79, 79)
 
 class GameManager:
     def __init__(self):
-        pygame.display.set_caption("My Game")
+        pygame.display.set_caption("Escape the Castle")
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         self.clock = pygame.time.Clock()
         self.entities = pygame.sprite.Group()
+        self.item_sprites = pygame.sprite.Group()
+        self.mob_sprites = pygame.sprite.Group()
+        self.inventory = Inventory(self)
+        self.items = {'item': ['helmet', 'chest', 'shield', 'axe', 'sword'],
+                      'resource': ['coke']}
         self.state = "menu"
+        self.map_obj = Map()
         self.map = None
         self.visible_sprites = None
         self.player = None
@@ -38,23 +50,36 @@ class GameManager:
         self.mobs = []
 
     def init_map(self):
-        tmp = Map()
-        tmp.create_wall_sprites()
-        self.visible_sprites = tmp.visible_sprites
-        self.map = tmp.get_map()
+        self.map_obj.create_wall_sprites()
+        self.visible_sprites = self.map_obj.visible_sprites
+        self.map = self.map_obj.get_map()
         # tmp.draw_in_terminal()
-
-        self.player = Player(tmp.get_spawn_coord_in_room(), tmp.obstacle_sprites)
-        self.mob1 = Flying_eye(tmp.get_spawn_coord_in_room(), (self.player.coordx, self.player.coordy), tmp.obstacle_sprites)
-        self.mob2 = Goblin(tmp.get_spawn_coord_in_room(), (self.player.coordx, self.player.coordy), tmp.obstacle_sprites)
-        self.mob3 = Mushroom(tmp.get_spawn_coord_in_room(), (self.player.coordx, self.player.coordy), tmp.obstacle_sprites)
+        self.player = Player(self.map_obj.get_spawn_coord_in_room(), self.map_obj.obstacle_sprites, self)
+        self.mob1 = Flying_eye(self.map_obj.get_spawn_coord_in_room(), (self.player.coordx, self.player.coordy),
+                               self.map_obj.obstacle_sprites)
+        self.mob2 = Goblin(self.map_obj.get_spawn_coord_in_room(), (self.player.coordx, self.player.coordy),
+                           self.map_obj.obstacle_sprites)
+        self.mob3 = Mushroom(self.map_obj.get_spawn_coord_in_room(), (self.player.coordx, self.player.coordy),
+                             self.map_obj.obstacle_sprites)
+        # axe = inventory.Item(self.map_obj.get_spawn_coord_in_room(), 'axe', './img/axe.png', self.item_sprites)
+        # self.visible_sprites.add(axe)
         self.visible_sprites.add(self.player)
         self.visible_sprites.add(self.mob1)
         self.visible_sprites.add(self.mob2)
         self.visible_sprites.add(self.mob3)
+        self.mob_sprites.add(self.mob1)
+        self.mob_sprites.add(self.mob2)
+        self.mob_sprites.add(self.mob3)
         self.mobs.append(self.mob1)
         self.mobs.append(self.mob2)
         self.mobs.append(self.mob3)
+        self.init_items()
+
+    def init_items(self):
+        for key in self.items.keys():
+            for item in self.items[key]:
+                self.visible_sprites.add(Item(self.map_obj.get_spawn_coord_in_room(), item, './img/{}.png'.format(item),
+                                              self.item_sprites))
 
     def start_game(self):
         self.state = 'game_running'
@@ -74,6 +99,8 @@ class GameManager:
             print('-' * 150)
 
             running = True
+            hold_left = False
+
             while running:
                 # Держим цикл на правильной скорости
                 self.clock.tick(FPS)
@@ -105,6 +132,35 @@ class GameManager:
                 # self.map_surface.draw(self.screen)
 
                 self.visible_sprites.custom_draw(self.player)
+
+                self.inventory.show_panel()
+
+                # self.inventory.draw_panel(self)
+
+                mouse = pygame.mouse.get_pos()
+                click = pygame.mouse.get_pressed()
+
+                if click[0] and not hold_left:
+                    print(mouse)
+                    self.inventory.set_start_cell(mouse[0], mouse[1])
+                    hold_left = True
+                if hold_left and not click[0]:
+                    print(mouse)
+                    self.inventory.set_end_cell(mouse[0], mouse[1])
+                    hold_left = False
+
+                if keys[pygame.K_e]:
+                    # self.inventory.draw_whole(self)
+                    self.inventory.draw_whole_items(self)
+                    # self.inventory.increase_item('shield')
+                    # self.inventory.increase_item('sword')
+                    # self.inventory.increase_item('axe')
+                    # self.inventory.increase_item('helmet')
+                    # self.inventory.increase_item('chest')
+
+                if keys[pygame.K_4]:
+                   self.inventory.increase('coke')
+                   sleep(0.1)
 
                 # self.entities.draw(self.screen)
 

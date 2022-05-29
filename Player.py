@@ -5,7 +5,7 @@ HEIGHT = 32
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, pos, obstacle_sprites):
+    def __init__(self, pos, obstacle_sprites, GameManager):
         pygame.sprite.Sprite.__init__(self)
         self.animations = {'idle_left': [], 'idle_right': [], 'idle_up': [], 'idle_down': [],
                            'run_left': [], 'run_right': [], 'run_up': [], 'run_down': [],
@@ -23,7 +23,9 @@ class Player(pygame.sprite.Sprite):
 
         self.direction = pygame.math.Vector2(0, 0)
         self.speed = 8
-        self.health = 3
+        self.health = 100
+        self.weapon = 100
+        self.armour = 100
 
         # player status
         self.status = 'idle_right'
@@ -33,6 +35,7 @@ class Player(pygame.sprite.Sprite):
         self.coordy = pos[1]
 
         self.obstacle_sprites = obstacle_sprites
+        self.GameManager = GameManager
 
     def import_assets(self):
         path = './img/'
@@ -110,7 +113,7 @@ class Player(pygame.sprite.Sprite):
                 else:
                     self.status = self.next_status
 
-    def collision(self, direction):
+    def collision_wall(self, direction):
         if direction == 'horizontal':
             for sprite in self.obstacle_sprites:
                 if sprite.rect.colliderect(self.rect):
@@ -127,13 +130,32 @@ class Player(pygame.sprite.Sprite):
                     if self.direction.y < 0:
                         self.rect.top = sprite.rect.bottom
 
+    def collision_item(self):
+        for sprite in self.GameManager.item_sprites:
+            if sprite.rect.colliderect(self.rect):
+                if sprite.name in self.GameManager.items['item']:
+                    whole_inventory_for_items = self.GameManager.inventory.whole_inventory_for_items
+                    whole_inventory_for_items[whole_inventory_for_items.index(None)] = sprite
+                elif sprite.name in self.GameManager.items['resource']:
+                    if sprite.name == 'coke':
+                        self.health += 50
+                sprite.kill()
+
+    def collision_mob(self):
+        for sprite in self.GameManager.mob_sprites:
+            if sprite.rect.colliderect(self.rect) and self.status in ['attack_left', 'attack_up',
+                                                                      'attack_down', 'attack_right']:
+                sprite.kill()
+
     def update(self):
         self.get_input()
         self.get_status()
         self.rect.x += self.direction.x * self.speed
         self.coordx += self.direction.x * self.speed
-        self.collision('horizontal')
+        self.collision_wall('horizontal')
         self.rect.y += self.direction.y * self.speed
         self.coordy += self.direction.y * self.speed
-        self.collision('vertical')
+        self.collision_wall('vertical')
+        self.collision_item()
+        self.collision_mob()
         self.animate()
