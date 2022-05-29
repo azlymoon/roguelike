@@ -37,6 +37,7 @@ class GameManager:
         self.item_sprites = pygame.sprite.Group()
         self.mob_sprites = pygame.sprite.Group()
         self.inventory = Inventory(self)
+        self.game_running = False
         self.items = {'item': ['helmet', 'chest', 'shield', 'axe', 'sword'],
                       'resource': ['coke']}
         self.state = "menu"
@@ -55,11 +56,11 @@ class GameManager:
         self.map = self.map_obj.get_map()
         # tmp.draw_in_terminal()
         self.player = Player(self.map_obj.get_spawn_coord_in_room(), self.map_obj.obstacle_sprites, self)
-        self.mob1 = Flying_eye(self.map_obj.get_spawn_coord_in_room(), (self.player.coordx, self.player.coordy),
+        self.mob1 = Flying_eye(self.map_obj.get_spawn_coord_in_room(), self.player,
                                self.map_obj.obstacle_sprites)
-        self.mob2 = Goblin(self.map_obj.get_spawn_coord_in_room(), (self.player.coordx, self.player.coordy),
+        self.mob2 = Goblin(self.map_obj.get_spawn_coord_in_room(), self.player,
                            self.map_obj.obstacle_sprites)
-        self.mob3 = Mushroom(self.map_obj.get_spawn_coord_in_room(), (self.player.coordx, self.player.coordy),
+        self.mob3 = Mushroom(self.map_obj.get_spawn_coord_in_room(), self.player,
                              self.map_obj.obstacle_sprites)
         # axe = inventory.Item(self.map_obj.get_spawn_coord_in_room(), 'axe', './img/axe.png', self.item_sprites)
         # self.visible_sprites.add(axe)
@@ -73,6 +74,7 @@ class GameManager:
         self.mobs.append(self.mob1)
         self.mobs.append(self.mob2)
         self.mobs.append(self.mob3)
+        self.player.get_mobs(self.mobs)
         self.init_items()
 
     def init_items(self):
@@ -98,17 +100,17 @@ class GameManager:
                 print()
             print('-' * 150)
 
-            running = True
+            self.game_running = True
             hold_left = False
 
-            while running:
+            while self.game_running:
                 # Держим цикл на правильной скорости
                 self.clock.tick(FPS)
                 # Ввод процесса (события)
                 for event in pygame.event.get():
                     # check for closing window
                     if event.type == pygame.QUIT:
-                        running = False
+                        self.game_running = False
                 for mob in self.mobs:
                     if mob.health <= 0:
                         mob.projectile.kill()
@@ -163,9 +165,9 @@ class GameManager:
                     # self.inventory.increase_item('helmet')
                     # self.inventory.increase_item('chest')
 
-                if keys[pygame.K_4]:
-                   self.inventory.increase('coke')
-                   sleep(0.1)
+                # if keys[pygame.K_4]:
+                #    self.inventory.increase('coke')
+                #    sleep(0.1)
 
                 # self.entities.draw(self.screen)
 

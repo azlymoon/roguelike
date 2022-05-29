@@ -39,7 +39,6 @@ class Player(pygame.sprite.Sprite):
         self.obstacle_sprites = obstacle_sprites
         self.GameManager = GameManager
 
-
     def import_assets(self):
         path = './img/'
         for animation in self.animations.keys():
@@ -169,10 +168,11 @@ class Player(pygame.sprite.Sprite):
                 sprite.kill()
 
     def check_health(self):
-        if self.health == 0:
+        if self.health <= 0:
             self.GameManager.game_running = False
 
     def update(self):
+        print(self.health)
         self.check_health()
         self.get_input()
         self.get_status()
