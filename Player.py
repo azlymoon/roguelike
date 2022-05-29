@@ -1,5 +1,6 @@
 import pygame
 from support import import_folder
+
 WIDTH = 32
 HEIGHT = 32
 
@@ -18,7 +19,7 @@ class Player(pygame.sprite.Sprite):
         self.image = self.animations['idle_right'][self.frame_index]
 
         self.rect = self.image.get_rect(topleft=pos)
-
+        self.mobs = None
         # player movement
 
         self.direction = pygame.math.Vector2(0, 0)
@@ -31,8 +32,7 @@ class Player(pygame.sprite.Sprite):
         self.status = 'idle_right'
         self.attack_status = 0
         self.next_status = 0
-        self.coordx = pos[0]
-        self.coordy = pos[1]
+        self.GameManager = GameManager
 
         self.obstacle_sprites = obstacle_sprites
         self.GameManager = GameManager
@@ -42,6 +42,9 @@ class Player(pygame.sprite.Sprite):
         for animation in self.animations.keys():
             full_path = path + animation
             self.animations[animation] = import_folder(full_path)
+
+    def give_pos_player(self):
+        return [self.rect.x, self.rect.y]
 
     def animate(self):
         if self.status != '':
@@ -75,21 +78,36 @@ class Player(pygame.sprite.Sprite):
             self.direction.y = 0
             self.attack_status = 0
 
+    def get_mobs(self, mobs):
+        self.mobs = mobs
+
     def get_status(self):
         if self.attack_status == 1:
             if self.status in ['idle_right', 'run_right']:
+                for mob in self.mobs:
+                    if 30 >= mob.rect.x - self.rect.x > 0 and abs(mob.rect.y - self.rect.y) <= 20:
+                        mob.health -= 1
                 self.status = 'attack_right'
                 self.next_status = 'idle_right'
                 self.attack_status = 0
             elif self.status in ['idle_left', 'run_left']:
+                for mob in self.mobs:
+                    if 30 >= self.rect.x - mob.rect.x > 0 and abs(mob.rect.y - self.rect.y) <= 20:
+                        mob.health -= 1
                 self.status = 'attack_left'
                 self.next_status = 'idle_left'
                 self.attack_status = 0
             elif self.status in ['idle_up', 'run_up']:
+                for mob in self.mobs:
+                    if abs(mob.rect.x - self.rect.x) <= 20 and 30 >= mob.rect.y - self.rect.y > 0:
+                        mob.health -= 1
                 self.status = 'attack_up'
                 self.next_status = 'idle_up'
                 self.attack_status = 0
             elif self.status in ['idle_down', 'run_down']:
+                for mob in self.mobs:
+                    if abs(mob.rect.x - self.rect.x) <= 20 and 30 >= self.rect.y - mob.rect.y > 0:
+                        mob.health -= 1
                 self.status = 'attack_down'
                 self.next_status = 'idle_down'
                 self.attack_status = 0
@@ -131,31 +149,46 @@ class Player(pygame.sprite.Sprite):
                         self.rect.top = sprite.rect.bottom
 
     def collision_item(self):
-        for sprite in self.GameManager.item_sprites:
-            if sprite.rect.colliderect(self.rect):
-                if sprite.name in self.GameManager.items['item']:
+        for item in self.GameManager.item_sprites:
+            if item.rect.colliderect(self.rect):
+                if item.name in self.GameManager.items['item']:
                     whole_inventory_for_items = self.GameManager.inventory.whole_inventory_for_items
-                    whole_inventory_for_items[whole_inventory_for_items.index(None)] = sprite
-                elif sprite.name in self.GameManager.items['resource']:
-                    if sprite.name == 'coke':
+                    whole_inventory_for_items[whole_inventory_for_items.index(None)] = item
+                elif item.name in self.GameManager.items['resource']:
+                    if item.name == 'coke':
                         self.health += 50
-                sprite.kill()
+                item.kill()
 
     def collision_mob(self):
-        for sprite in self.GameManager.mob_sprites:
-            if sprite.rect.colliderect(self.rect) and self.status in ['attack_left', 'attack_up',
-                                                                      'attack_down', 'attack_right']:
-                sprite.kill()
+        for mob in self.GameManager.mob_sprites:
+            if mob.rect.colliderect(self.rect) and self.status in ['attack_left', 'attack_up',
+                                                                   'attack_down', 'attack_right']:
+                mob.health -= self.weapon
+                mob.check_health()
+
+    def collision_projectile(self):
+        for projectile in self.GameManager.projectile_sprites:
+            if projectile.rect.colliderect(self.rect):
+                if self.armour > 0:
+                    self.armour -= 20
+                else:
+                    self.health -= 10
+                projectile.status = 'explode'
+                projectile.kill()
+
+    def check_health(self):
+        if self.health <= 0:
+            self.GameManager.game_running = False
 
     def update(self):
+        self.check_health()
         self.get_input()
         self.get_status()
         self.rect.x += self.direction.x * self.speed
-        self.coordx += self.direction.x * self.speed
         self.collision_wall('horizontal')
         self.rect.y += self.direction.y * self.speed
-        self.coordy += self.direction.y * self.speed
         self.collision_wall('vertical')
         self.collision_item()
         self.collision_mob()
+        self.collision_projectile()
         self.animate()

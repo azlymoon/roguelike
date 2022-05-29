@@ -10,6 +10,7 @@ weapon_img = pygame.transform.scale(weapon_img, (40, 40))
 armour_img = pygame.image.load('./img/menu/armour.png')
 armour_img = pygame.transform.scale(armour_img, (34, 34))
 
+
 class Resource:
     def __init__(self, name, image_path):
         self.name = name
@@ -73,11 +74,11 @@ class Inventory:
     #     # print(self.resources[name].amount)
 
     # def increase_item(self, name1):
-        # self.resources[name].amount += 1
-        # print(self.resources[name].amount)
-        # self.update_whole()
-        # if self.items[name1] not in self.whole_inventory_for_items:
-        #     self.whole_inventory_for_items[self.whole_inventory_for_items.index(None)] = self.items[name1]
+    # self.resources[name].amount += 1
+    # print(self.resources[name].amount)
+    # self.update_whole()
+    # if self.items[name1] not in self.whole_inventory_for_items:
+    #     self.whole_inventory_for_items[self.whole_inventory_for_items.index(None)] = self.items[name1]
 
     # def update_whole(self):
     #     for name, resource in self.resources.items():
@@ -192,6 +193,34 @@ class Inventory:
         temp = self.whole_inventory_for_items[self.end_cell]
         self.whole_inventory_for_items[self.end_cell] = self.whole_inventory_for_items[self.start_cell]
         self.whole_inventory_for_items[self.start_cell] = temp
+        self.change_weapon()
+        self.change_armour()
+
+    def change_weapon(self):
+        if self.end_cell == 9:
+            if self.whole_inventory_for_items[9] is not None:
+                self.GameManager.player.weapon += 80
+        if self.start_cell == 9:
+            self.GameManager.player.weapon -= 80
+
+    def change_armour(self):
+        if self.end_cell == 11:
+            if self.whole_inventory_for_items[11] is not None:
+                self.GameManager.player.armour += 50
+        if self.start_cell == 11:
+            self.GameManager.player.armour -= 50
+
+        if self.end_cell == 6:
+            if self.whole_inventory_for_items[6] is not None:
+                self.GameManager.player.armour += 70
+        if self.start_cell == 6:
+            self.GameManager.player.armour -= 70
+
+        if self.end_cell == 7:
+            if self.whole_inventory_for_items[7] is not None:
+                self.GameManager.player.armour += 100
+        if self.start_cell == 7:
+            self.GameManager.player.armour -= 100
 
     def show_panel(self):
         x = y = 15
@@ -204,18 +233,9 @@ class Inventory:
                    font_size=30)
 
         self.GameManager.screen.blit(weapon_img, (x - 5, y + step - 7))
-        if self.whole_inventory_for_items[9] is not None:
-            # self.GameManager.player.weapon += 80
-            print_text(self.GameManager, str(self.GameManager.player.weapon + 80), x + step, y - 5 + step,
-                       (255, 255, 255), font_size=30)
-        else:
-            print_text(self.GameManager, str(self.GameManager.player.weapon), x + step, y - 5 + step,
-                       (255, 255, 255), font_size=30)
+        print_text(self.GameManager, str(self.GameManager.player.weapon), x + step, y - 5 + step,
+                   (255, 255, 255), font_size=30)
 
         self.GameManager.screen.blit(armour_img, (x - 3, y + 2 * step - 2))
-        if self.whole_inventory_for_items[11] is not None:
-            print_text(self.GameManager, str(self.GameManager.player.armour + 50), x + step, y - 5 + 2 * step,
-                       (255, 255, 255), font_size=30)
-        else:
-            print_text(self.GameManager, str(self.GameManager.player.armour), x + step, y - 5 + 2 * step,
-                       (255, 255, 255), font_size=30)
+        print_text(self.GameManager, str(self.GameManager.player.armour), x + step, y - 5 + 2 * step,
+                   (255, 255, 255), font_size=30)

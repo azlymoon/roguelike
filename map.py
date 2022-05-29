@@ -119,7 +119,7 @@ class Wall(pygame.sprite.Sprite):
 
 
 class Map:  # 38 20
-    def __init__(self, width=38, height=22):
+    def __init__(self, width=38, height=20):
     # def __init__(self, width=30, height=20):
         self.width = width
         self.height = height
@@ -132,7 +132,7 @@ class Map:  # 38 20
         self.obstacle_sprites = pygame.sprite.Group()
         self.walls = []
         self.spawn_coords = []
-        self.spawn_dist = 5
+        self.spawn_dist = 3
         self.map = self.generate_map()
 
     def draw_in_terminal(self):
@@ -316,34 +316,35 @@ class Map:  # 38 20
         return map
 
     def get_spawn_coord_in_room(self):
-        variants = [i for i in range(0, len(self.walls) - 1)]
+        # variants = [i for i in range(0, len(self.walls) - 1)]
+
+        variants = [wall for wall in self.walls if wall.wall_type == 'floor_in_room']
+
         while len(variants) > 0:
-            rand_spawn = variants[random.randint(0, len(variants) - 1)]
-            spawn_point = self.walls[rand_spawn]
-            if spawn_point.wall_type == 'floor_in_room':
-                if len(self.spawn_coords) > 0:
-                    x1, y1 = spawn_point.pos
-                    x1 /= self.tilesize
-                    y1 /= self.tilesize
-                    flag = True
-                    for point in self.spawn_coords:
-                        x2, y2 = point
-                        x2 /= self.tilesize
-                        y2 /= self.tilesize
-                        if ((x1 - x2)**2 + (y1 - y2)**2)**(1/2) < self.spawn_dist:
-                            flag = False
-                    if flag:
-                        self.spawn_coords.append(spawn_point.pos)
-                        print(spawn_point.pos)
-                        return spawn_point.pos
-                    else:
-                        variants.remove(rand_spawn)
-                else:
+            spawn_point = variants[random.randint(0, len(variants) - 1)]
+            # spawn_point = self.walls[rand_spawn]
+            if len(self.spawn_coords) > 0:
+                x1, y1 = spawn_point.pos
+                x1 /= self.tilesize
+                y1 /= self.tilesize
+                flag = True
+                for point in self.spawn_coords:
+                    x2, y2 = point
+                    x2 /= self.tilesize
+                    y2 /= self.tilesize
+                    if ((x1 - x2)**2 + (y1 - y2)**2)**(1/2) < self.spawn_dist:
+                        flag = False
+                if flag:
                     self.spawn_coords.append(spawn_point.pos)
                     print(spawn_point.pos)
+                    print(self.spawn_coords)
                     return spawn_point.pos
+                else:
+                    variants.remove(spawn_point)
             else:
-                variants.remove(rand_spawn)
+                self.spawn_coords.append(spawn_point.pos)
+                print(spawn_point.pos)
+                return spawn_point.pos
         else:
             print('Нет точки спавна...')
 
