@@ -8,14 +8,14 @@ import random
 
 
 class Flying_eye(pygame.sprite.Sprite):
-    def __init__(self, pos, player, obstacle_sprites):
+    def __init__(self, pos, player, obstacle_sprites, GameManager):
         pygame.sprite.Sprite.__init__(self)
         self.animations = {'idle_left': [], 'idle_right': [],
                            'run_left': [], 'run_right': [],
                            'attack_left': [], 'attack_right': []
 
                            }
-
+        self.GameManager = GameManager
         self.import_assets()
         self.frame_index = 0
         self.image = self.animations['idle_right'][self.frame_index]
@@ -25,7 +25,7 @@ class Flying_eye(pygame.sprite.Sprite):
 
         self.direction = pygame.math.Vector2(0, 0)
         self.speed = 6
-        self.health = 1
+        self.health = 1000
         self.coordx = pos[0]
         self.coordy = pos[1]
 
@@ -124,7 +124,7 @@ class Flying_eye(pygame.sprite.Sprite):
                     self.status = self.next_status
 
     def create_projectile(self, mob_coords, player_coords, target_coords):
-        self.projectile = Flying_eye_projectile(mob_coords, self.player, target_coords)
+        self.projectile = Flying_eye_projectile(mob_coords, self.player, target_coords, self.GameManager)
 
     def collision(self, direction):
         if direction == 'horizontal':
@@ -143,6 +143,11 @@ class Flying_eye(pygame.sprite.Sprite):
                     if self.direction.y < 0:
                         self.rect.top = sprite.rect.bottom
 
+    def check_health(self):
+        if self.health <= 0:
+            print(self.health)
+            self.kill()
+
     def update(self):
         # print(self.coordx, self.coordy, self.player.coordx, self.player.coordy)
         # self.get_input()
@@ -158,8 +163,9 @@ class Flying_eye(pygame.sprite.Sprite):
 
 
 class Goblin(Flying_eye):
-    def __init__(self, pos, player, obstacle_sprites):
-        super().__init__(pos=pos, player=player, obstacle_sprites=obstacle_sprites)
+    def __init__(self, pos, player, obstacle_sprites, GameManager):
+        super().__init__(pos=pos, player=player, obstacle_sprites=obstacle_sprites,
+                         GameManager=GameManager)
 
     def import_assets(self):
         path = './goblin/'
@@ -169,12 +175,13 @@ class Goblin(Flying_eye):
             self.animations[animation] = import_folder(full_path)
 
     def create_projectile(self, mob_coords, player_coords, target_coords):
-        self.projectile = Goblin_projectile(mob_coords, self.player, target_coords)
+        self.projectile = Goblin_projectile(mob_coords, self.player, target_coords, self.GameManager)
 
 
 class Mushroom(Flying_eye):
-    def __init__(self, pos, player, obstacle_sprites):
-        super().__init__(pos=pos, player=player, obstacle_sprites=obstacle_sprites)
+    def __init__(self, pos, player, obstacle_sprites, GameManager):
+        super().__init__(pos=pos, player=player, obstacle_sprites=obstacle_sprites,
+                         GameManager=GameManager)
 
     def import_assets(self):
         path = './mushroom/'
@@ -184,4 +191,4 @@ class Mushroom(Flying_eye):
             self.animations[animation] = import_folder(full_path)
 
     def create_projectile(self, mob_coords, player_coords, target_coords):
-        self.projectile = Mushroom_projectile(mob_coords, self.player, target_coords)
+        self.projectile = Mushroom_projectile(mob_coords, self.player, target_coords, self.GameManager)

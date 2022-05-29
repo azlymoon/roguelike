@@ -36,6 +36,7 @@ class GameManager:
         self.entities = pygame.sprite.Group()
         self.item_sprites = pygame.sprite.Group()
         self.mob_sprites = pygame.sprite.Group()
+        self.projectile_sprites = pygame.sprite.Group()
         self.inventory = Inventory(self)
         self.game_running = False
         self.items = {'item': ['helmet', 'chest', 'shield', 'axe', 'sword'],
@@ -57,11 +58,11 @@ class GameManager:
         # tmp.draw_in_terminal()
         self.player = Player(self.map_obj.get_spawn_coord_in_room(), self.map_obj.obstacle_sprites, self)
         self.mob1 = Flying_eye(self.map_obj.get_spawn_coord_in_room(), self.player,
-                               self.map_obj.obstacle_sprites)
+                               self.map_obj.obstacle_sprites, self)
         self.mob2 = Goblin(self.map_obj.get_spawn_coord_in_room(), self.player,
-                           self.map_obj.obstacle_sprites)
+                           self.map_obj.obstacle_sprites, self)
         self.mob3 = Mushroom(self.map_obj.get_spawn_coord_in_room(), self.player,
-                             self.map_obj.obstacle_sprites)
+                             self.map_obj.obstacle_sprites, self)
         # axe = inventory.Item(self.map_obj.get_spawn_coord_in_room(), 'axe', './img/axe.png', self.item_sprites)
         # self.visible_sprites.add(axe)
         self.visible_sprites.add(self.player)
@@ -85,6 +86,10 @@ class GameManager:
 
     def start_game(self):
         self.state = 'game_running'
+        self.run()
+
+    def start_menu(self):
+        self.state = 'menu'
         self.run()
 
     def run(self):
@@ -113,8 +118,8 @@ class GameManager:
                         self.game_running = False
                 for mob in self.mobs:
                     if mob.health <= 0:
-                        mob.projectile.kill()
-                        mob.kill()
+                        # mob.projectile.kill()
+                        # mob.kill()
                         self.mobs.remove(mob)
                     else:
 

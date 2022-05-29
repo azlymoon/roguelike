@@ -4,12 +4,12 @@ from math import sqrt, copysign
 
 
 class Flying_eye_projectile(pygame.sprite.Sprite):
-    def __init__(self, pos, player, target_coords):
+    def __init__(self, pos, player, target_coords, GameManager):
         pygame.sprite.Sprite.__init__(self)
         # self.pos = pos
         self.animations = {'explode': [], 'fly': [],
                            }
-
+        self.GameManager = GameManager
         self.import_assets()
         self.frame_index = 0
         self.image = self.animations['fly'][self.frame_index]
@@ -29,6 +29,10 @@ class Flying_eye_projectile(pygame.sprite.Sprite):
         self.length = sqrt((self.target_coords[0] - self.coordx) ** 2 + (self.target_coords[1] - self.coordy) ** 2)
         # print(type(self.coordx))
         # print(type(self.player.coordx))
+        self.add_to_projectile_sprites()
+
+    def add_to_projectile_sprites(self):
+        self.GameManager.projectile_sprites.add(self)
 
     def import_assets(self):
         path = './flying_eye_projectile/'
@@ -57,8 +61,8 @@ class Flying_eye_projectile(pygame.sprite.Sprite):
             self.direction.y = sign(self.target_coords[1] - self.coordy)
             self.living_time += 1
         else:
-            if abs(self.player.coordx - self.coordx) <= 3 and abs(self.player.coordy - self.coordy) <= 3:
-                self.player.health -= 1
+            # if abs(self.player.coordx - self.coordx) <= 3 and abs(self.player.coordy - self.coordy) <= 3:
+            #     self.player.health -= 1
             self.status = 'explode'
             self.living_time=0
 

@@ -39,7 +39,6 @@ class Player(pygame.sprite.Sprite):
         self.obstacle_sprites = obstacle_sprites
         self.GameManager = GameManager
 
-
     def import_assets(self):
         path = './img/'
         for animation in self.animations.keys():
@@ -152,21 +151,28 @@ class Player(pygame.sprite.Sprite):
                         self.rect.top = sprite.rect.bottom
 
     def collision_item(self):
-        for sprite in self.GameManager.item_sprites:
-            if sprite.rect.colliderect(self.rect):
-                if sprite.name in self.GameManager.items['item']:
+        for item in self.GameManager.item_sprites:
+            if item.rect.colliderect(self.rect):
+                if item.name in self.GameManager.items['item']:
                     whole_inventory_for_items = self.GameManager.inventory.whole_inventory_for_items
-                    whole_inventory_for_items[whole_inventory_for_items.index(None)] = sprite
-                elif sprite.name in self.GameManager.items['resource']:
-                    if sprite.name == 'coke':
+                    whole_inventory_for_items[whole_inventory_for_items.index(None)] = item
+                elif item.name in self.GameManager.items['resource']:
+                    if item.name == 'coke':
                         self.health += 50
-                sprite.kill()
+                item.kill()
 
     def collision_mob(self):
-        for sprite in self.GameManager.mob_sprites:
-            if sprite.rect.colliderect(self.rect) and self.status in ['attack_left', 'attack_up',
-                                                                      'attack_down', 'attack_right']:
-                sprite.kill()
+        for mob in self.GameManager.mob_sprites:
+            if mob.rect.colliderect(self.rect) and self.status in ['attack_left', 'attack_up',
+                                                                   'attack_down', 'attack_right']:
+                mob.health -= self.weapon
+                mob.check_health()
+
+    def collision_projectile(self):
+        for projectile in self.GameManager.projectile_sprites:
+            if projectile.rect.colliderect(self.rect):
+                self.health -= 10
+                projectile.kill()
 
     def check_health(self):
         if self.health <= 0:
@@ -184,4 +190,5 @@ class Player(pygame.sprite.Sprite):
         self.collision_wall('vertical')
         self.collision_item()
         self.collision_mob()
+        self.collision_projectile()
         self.animate()
