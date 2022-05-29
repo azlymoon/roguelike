@@ -19,7 +19,7 @@ WIDTH = 1280
 HEIGHT = 720
 FPS = 30
 
-# Задаем цвета
+# Р—Р°РґР°РµРј С†РІРµС‚Р°
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
@@ -42,8 +42,8 @@ class GameManager:
         self.items = {'item': ['helmet', 'chest', 'shield', 'axe', 'sword'],
                       'resource': ['coke']}
         self.state = "menu"
-        self.map_obj = Map()
         self.map = None
+        self.map_obj = None
         self.visible_sprites = None
         self.player = None
         self.mob1 = None
@@ -52,6 +52,7 @@ class GameManager:
         self.mobs = []
 
     def init_map(self):
+        self.map_obj = Map()
         self.map_obj.create_wall_sprites()
         self.visible_sprites = self.map_obj.visible_sprites
         self.map = self.map_obj.get_map()
@@ -90,6 +91,7 @@ class GameManager:
 
     def start_menu(self):
         self.state = 'menu'
+        # self.state = 'game_running'
         self.run()
 
     def run(self):
@@ -97,7 +99,7 @@ class GameManager:
             self.init_map()
             show_menu(self)
         elif self.state == 'game_running':
-            # Отрисовка карты в консоль
+            # РћС‚СЂРёСЃРѕРІРєР° РєР°СЂС‚С‹ РІ РєРѕРЅСЃРѕР»СЊ
             print('-' * 150)
             for y in range(len(self.map)):
                 for x in range(len(self.map[0])):
@@ -109,9 +111,7 @@ class GameManager:
             hold_left = False
 
             while self.game_running:
-                # Держим цикл на правильной скорости
                 self.clock.tick(FPS)
-                # Ввод процесса (события)
                 for event in pygame.event.get():
                     # check for closing window
                     if event.type == pygame.QUIT:
@@ -123,7 +123,7 @@ class GameManager:
                         self.mobs.remove(mob)
                     else:
 
-                        # print("статус из меню", mob.projectile.status)
+                        # print("СЃС‚Р°С‚СѓСЃ РёР· РјРµРЅСЋ", mob.projectile.status)
                         if mob.projectile is not None:
                             if mob.projectile.status != 'explode':
                                 self.visible_sprites.add(mob.projectile)
@@ -133,10 +133,10 @@ class GameManager:
                 if keys[pygame.K_ESCAPE]:
                     pause(self)
 
-                # Обновление
+                # РћР±РЅРѕРІР»РµРЅРёРµ
                 # self.entities.update()
                 self.visible_sprites.update()
-                # Рендеринг
+                # Р РµРЅРґРµСЂРёРЅРі
 
                 self.screen.fill(BLACK)
                 # self.screen.fill(BLACK)
@@ -145,7 +145,10 @@ class GameManager:
 
                 self.visible_sprites.custom_draw(self.player)
 
+                # self.inventory.show_health()
                 self.inventory.show_panel()
+
+                self.player.check_health()
 
                 # self.inventory.draw_panel(self)
 
@@ -176,7 +179,7 @@ class GameManager:
 
                 # self.entities.draw(self.screen)
 
-                # После отрисовки всего, переворачиваем экран
+                # РџРѕСЃР»Рµ РѕС‚СЂРёСЃРѕРІРєРё РІСЃРµРіРѕ, РїРµСЂРµРІРѕСЂР°С‡РёРІР°РµРј СЌРєСЂР°РЅ
                 pygame.display.flip()
             pygame.quit()
 

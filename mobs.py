@@ -74,8 +74,8 @@ class Flying_eye(pygame.sprite.Sprite):
         #         (self.coordx - self.player.coordx) ** 2 + (self.coordy - self.player.coordy) ** 2) > 10 and \
         #         math.floor(self.frame_index) == len(self.animations)-1:
         # print(self.projectile.status)
-        print(sqrt(
-            (self.coordx - self.player.coordx) ** 2 + (self.coordy - self.player.coordy) ** 2))
+        # print(sqrt(
+        #    (self.coordx - self.player.coordx) ** 2 + (self.coordy - self.player.coordy) ** 2))
         if 200 > sqrt((self.coordx - self.player.coordx) ** 2 + (self.coordy - self.player.coordy) ** 2) > 40 and \
                 math.floor(self.frame_index) == len(self.animations) - 1:
             if self.projectile is None:
