@@ -33,6 +33,7 @@ class GameManager:
         self.mob2 = None
         self.mob3 = None
         self.mobs = []
+        self.game_running = False
 
     def init_map(self):
         tmp = Map()
@@ -41,7 +42,7 @@ class GameManager:
         self.map = tmp.get_map()
         # tmp.draw_in_terminal()
 
-        self.player = Player(tmp.get_spawn_coord_in_room(), tmp.obstacle_sprites)
+        self.player = Player(tmp.get_spawn_coord_in_room(), tmp.obstacle_sprites, self)
         # self.mob1 = Flying_eye(tmp.get_spawn_coord_in_room(), (self.player.coordx, self.player.coordy), tmp.obstacle_sprites)
         # self.mob2 = Goblin(tmp.get_spawn_coord_in_room(), (self.player.coordx, self.player.coordy), tmp.obstacle_sprites)
         # self.mob3 = Mushroom(tmp.get_spawn_coord_in_room(), (self.player.coordx, self.player.coordy), tmp.obstacle_sprites)
@@ -55,6 +56,7 @@ class GameManager:
         self.mobs.append(self.mob1)
         self.mobs.append(self.mob2)
         self.mobs.append(self.mob3)
+        self.player.get_mobs(self.mobs)
         self.set_state("game_running")
 
     def set_state(self, state):
@@ -71,24 +73,28 @@ class GameManager:
             print()
         print('-' * 150)
 
-        running = True
-        while running:
+        self.game_running = True
+        while self.game_running:
             # Держим цикл на правильной скорости
             self.clock.tick(FPS)
             # Ввод процесса (события)
             for event in pygame.event.get():
                 # check for closing window
                 if event.type == pygame.QUIT:
-                    running = False
+                    self.game_running = False
             for mob in self.mobs:
-                if mob.projectile.status == "explode":
+                if mob.health <= 0:
                     mob.projectile.kill()
-                if (
-                        sqrt((self.player.coordx - mob.coordx) ** 2 + (self.player.coordy - mob.coordy) ** 2)) <= 160:
-                    if mob.projectile.status == 'explode':
-                        mob.create_projectile((mob.coordx, mob.coordy), (self.player.coordx, self.player.coordy))
-                    else:
-                        self.visible_sprites.add(mob.projectile)
+                    mob.kill()
+                    self.mobs.remove(mob)
+                else:
+
+                    # print("статус из меню", mob.projectile.status)
+                    if mob.projectile is not None:
+                        if mob.projectile.status != 'explode':
+                            self.visible_sprites.add(mob.projectile)
+                        else:
+                            mob.projectile.kill()
 
             # Обновление
             # self.entities.update()

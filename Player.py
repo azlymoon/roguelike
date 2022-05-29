@@ -6,7 +6,7 @@ HEIGHT = 32
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, pos, obstacle_sprites):
+    def __init__(self, pos, obstacle_sprites, GameManager):
         pygame.sprite.Sprite.__init__(self)
         self.animations = {'idle_left': [], 'idle_right': [], 'idle_up': [], 'idle_down': [],
                            'run_left': [], 'run_right': [], 'run_up': [], 'run_down': [],
@@ -32,8 +32,10 @@ class Player(pygame.sprite.Sprite):
         self.next_status = 0
         self.coordx = pos[0]
         self.coordy = pos[1]
+        self.GameManager = GameManager
 
         self.obstacle_sprites = obstacle_sprites
+
 
     def import_assets(self):
         path = './img/'
@@ -146,7 +148,12 @@ class Player(pygame.sprite.Sprite):
                     if self.direction.y < 0:
                         self.rect.top = sprite.rect.bottom
 
+    def check_health(self):
+        if self.health == 0:
+            self.GameManager.game_running = False
+
     def update(self):
+        self.check_health()
         self.get_input()
         self.get_status()
         self.rect.x += self.direction.x * self.speed
