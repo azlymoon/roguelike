@@ -141,6 +141,12 @@ class Player(pygame.sprite.Sprite):
                         self.health += 50
                 sprite.kill()
 
+    def collision_mob(self):
+        for sprite in self.GameManager.mob_sprites:
+            if sprite.rect.colliderect(self.rect) and self.status in ['attack_left', 'attack_up',
+                                                                      'attack_down', 'attack_right']:
+                sprite.kill()
+
     def update(self):
         self.get_input()
         self.get_status()
@@ -151,4 +157,5 @@ class Player(pygame.sprite.Sprite):
         self.coordy += self.direction.y * self.speed
         self.collision_wall('vertical')
         self.collision_item()
+        self.collision_mob()
         self.animate()

@@ -49,7 +49,7 @@ class Inventory:
         # }
 
         # self.inventory_panel = [None] * 3
-        self.whole_inventory = [None] * 4
+        # self.whole_inventory = [None] * 4
         self.whole_inventory_for_items = [None] * 12
         self.start_cell = 0
         self.end_cell = 0
@@ -89,25 +89,25 @@ class Inventory:
     #         # print(self.resources[name].amount)
     #     # print()
 
-    def draw_whole(self, GameManager):
-        x = 655
-        y = 515
-        side = 60
-        step = 75
-
-        # отрисовка основного инвентаря на 4 ячейки
-        pygame.draw.rect(GameManager.screen, (175, 190, 202), (640, 500, 315, 100))
-        pygame.draw.rect(GameManager.screen, (255, 255, 255), (640, 500, 315, 100), 8)
-        pygame.draw.rect(GameManager.screen, (0, 0, 0), (640, 500, 315, 100), 2)
-
-        for cell in self.whole_inventory:
-            # print(cell.amount)
-            pygame.draw.rect(GameManager.screen, (200, 215, 227), (x, y, side, side))
-            if cell is not None:
-                GameManager.screen.blit(cell.image, (x + 5, y + 5))
-                print_text(GameManager, str(cell.amount), x + 27, y + 60, (0, 0, 0), font_size=18)
-
-            x += step
+    # def draw_whole(self, GameManager):
+    #     x = 655
+    #     y = 515
+    #     side = 60
+    #     step = 75
+    #
+    #     # отрисовка основного инвентаря на 4 ячейки
+    #     pygame.draw.rect(GameManager.screen, (175, 190, 202), (640, 500, 315, 100))
+    #     pygame.draw.rect(GameManager.screen, (255, 255, 255), (640, 500, 315, 100), 8)
+    #     pygame.draw.rect(GameManager.screen, (0, 0, 0), (640, 500, 315, 100), 2)
+    #
+    #     for cell in self.whole_inventory:
+    #         # print(cell.amount)
+    #         pygame.draw.rect(GameManager.screen, (200, 215, 227), (x, y, side, side))
+    #         if cell is not None:
+    #             GameManager.screen.blit(cell.image, (x + 5, y + 5))
+    #             print_text(GameManager, str(cell.amount), x + 27, y + 60, (0, 0, 0), font_size=18)
+    #
+    #         x += step
 
     def draw_whole_items(self, GameManager):
         x = 655

@@ -35,6 +35,7 @@ class GameManager:
         self.clock = pygame.time.Clock()
         self.entities = pygame.sprite.Group()
         self.item_sprites = pygame.sprite.Group()
+        self.mob_sprites = pygame.sprite.Group()
         self.inventory = Inventory(self)
         self.items = {'item': ['helmet', 'chest', 'shield', 'axe', 'sword'],
                       'resource': ['coke']}
@@ -66,6 +67,9 @@ class GameManager:
         self.visible_sprites.add(self.mob1)
         self.visible_sprites.add(self.mob2)
         self.visible_sprites.add(self.mob3)
+        self.mob_sprites.add(self.mob1)
+        self.mob_sprites.add(self.mob2)
+        self.mob_sprites.add(self.mob3)
         self.mobs.append(self.mob1)
         self.mobs.append(self.mob2)
         self.mobs.append(self.mob3)
@@ -146,7 +150,7 @@ class GameManager:
                     hold_left = False
 
                 if keys[pygame.K_e]:
-                    self.inventory.draw_whole(self)
+                    # self.inventory.draw_whole(self)
                     self.inventory.draw_whole_items(self)
                     # self.inventory.increase_item('shield')
                     # self.inventory.increase_item('sword')
