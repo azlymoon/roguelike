@@ -172,10 +172,6 @@ class Player(pygame.sprite.Sprite):
         if self.health <= 0:
             self.GameManager.game_running = False
 
-    def check_health(self):
-        if self.health == 0:
-            self.GameManager.game_running = False
-
     def update(self):
         self.check_health()
         self.get_input()
