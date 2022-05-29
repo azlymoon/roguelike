@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import pygame
 
 import inventory
