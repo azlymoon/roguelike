@@ -26,8 +26,7 @@ class Flying_eye(pygame.sprite.Sprite):
         self.direction = pygame.math.Vector2(0, 0)
         self.speed = 6
         self.health = 1000
-        self.coordx = pos[0]
-        self.coordy = pos[1]
+
 
         # mob status
         self.status = 'idle_right'
@@ -75,17 +74,15 @@ class Flying_eye(pygame.sprite.Sprite):
         #         math.floor(self.frame_index) == len(self.animations)-1:
         # print(self.projectile.status)
         # print(sqrt(
-        #    (self.coordx - self.player.coordx) ** 2 + (self.coordy - self.player.coordy) ** 2))
-        if 200 > sqrt((self.coordx - self.player.coordx) ** 2 + (self.coordy - self.player.coordy) ** 2) > 40 and \
+        # (self.coordx - self.player.coordx) ** 2 + (self.coordy - self.player.coordy) ** 2))
+        if 200 > sqrt((self.rect.x - self.player.rect.x) ** 2 + (self.rect.y - self.rect.y) ** 2) > 40 and \
                 math.floor(self.frame_index) == len(self.animations) - 1:
             if self.projectile is None:
-                self.create_projectile([self.coordx, self.coordy], self.player,
-                                       (self.player.coordx, self.player.coordy))
+                self.create_projectile()
 
             else:
                 if self.projectile.status == 'explode':
-                    self.create_projectile([self.coordx, self.coordy], self.player,
-                                           (self.player.coordx, self.player.coordy))
+                    self.create_projectile()
         self.attack_status = 1
         if self.attack_status == 1:
             if self.status == 'idle_right':
@@ -123,8 +120,8 @@ class Flying_eye(pygame.sprite.Sprite):
                 else:
                     self.status = self.next_status
 
-    def create_projectile(self, mob_coords, player_coords, target_coords):
-        self.projectile = Flying_eye_projectile(mob_coords, self.player, target_coords, self.GameManager)
+    def create_projectile(self):
+        self.projectile = Flying_eye_projectile([self.rect.x, self.rect.y], self.GameManager)
 
     def collision(self, direction):
         if direction == 'horizontal':
@@ -157,8 +154,6 @@ class Flying_eye(pygame.sprite.Sprite):
         self.collision('horizontal')
         self.rect.y += self.direction.y * self.speed
         self.collision('vertical')
-        self.coordx += self.direction.x * self.speed
-        self.coordy += self.direction.y * self.speed
         self.animate()
 
 
@@ -174,8 +169,8 @@ class Goblin(Flying_eye):
             full_path = path + animation
             self.animations[animation] = import_folder(full_path)
 
-    def create_projectile(self, mob_coords, player_coords, target_coords):
-        self.projectile = Goblin_projectile(mob_coords, self.player, target_coords, self.GameManager)
+    def create_projectile(self):
+        self.projectile = Goblin_projectile([self.rect.x, self.rect.y], self.GameManager)
 
 
 class Mushroom(Flying_eye):
@@ -190,5 +185,5 @@ class Mushroom(Flying_eye):
             full_path = path + animation
             self.animations[animation] = import_folder(full_path)
 
-    def create_projectile(self, mob_coords, player_coords, target_coords):
-        self.projectile = Mushroom_projectile(mob_coords, self.player, target_coords, self.GameManager)
+    def create_projectile(self):
+        self.projectile = Mushroom_projectile([self.rect.x, self.rect.y], self.GameManager)

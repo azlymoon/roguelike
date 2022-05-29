@@ -117,6 +117,8 @@ class GameManager:
                     if event.type == pygame.QUIT:
                         self.game_running = False
                 for mob in self.mobs:
+                    print(mob.rect.x, mob.rect.y, self.player.rect.x, self.player.rect.y)
+                    print(sqrt((mob.rect.x - self.player.rect.x) ** 2 + (mob.rect.y - self.player.rect.y) ** 2))
                     if mob.health <= 0:
                         # mob.projectile.kill()
                         # mob.kill()

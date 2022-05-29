@@ -1,7 +1,5 @@
 import pygame
 from support import import_folder
-from menu import print_text, show_menu
-from time import sleep
 
 WIDTH = 32
 HEIGHT = 32
@@ -26,7 +24,7 @@ class Player(pygame.sprite.Sprite):
 
         self.direction = pygame.math.Vector2(0, 0)
         self.speed = 8
-        self.health = 100
+        self.health = 1000000000000000000
         self.weapon = 100
         self.armour = 100
 
@@ -34,8 +32,6 @@ class Player(pygame.sprite.Sprite):
         self.status = 'idle_right'
         self.attack_status = 0
         self.next_status = 0
-        self.coordx = pos[0]
-        self.coordy = pos[1]
         self.GameManager = GameManager
 
         self.obstacle_sprites = obstacle_sprites
@@ -48,7 +44,7 @@ class Player(pygame.sprite.Sprite):
             self.animations[animation] = import_folder(full_path)
 
     def give_pos_player(self):
-        return [self.coordx, self.coordy]
+        return [self.rect.x, self.rect.y]
 
     def animate(self):
         if self.status != '':
@@ -89,28 +85,28 @@ class Player(pygame.sprite.Sprite):
         if self.attack_status == 1:
             if self.status in ['idle_right', 'run_right']:
                 for mob in self.mobs:
-                    if 30 >= mob.coordx - self.coordx > 0 and abs(mob.coordy - self.coordy) <= 20:
+                    if 30 >= mob.rect.x - self.rect.x > 0 and abs(mob.rect.y - self.rect.y) <= 20:
                         mob.health -= 1
                 self.status = 'attack_right'
                 self.next_status = 'idle_right'
                 self.attack_status = 0
             elif self.status in ['idle_left', 'run_left']:
                 for mob in self.mobs:
-                    if 30 >= self.coordx - mob.coordx > 0 and abs(mob.coordy - self.coordy) <= 20:
+                    if 30 >= self.rect.x - mob.rect.x > 0 and abs(mob.rect.y - self.rect.y) <= 20:
                         mob.health -= 1
                 self.status = 'attack_left'
                 self.next_status = 'idle_left'
                 self.attack_status = 0
             elif self.status in ['idle_up', 'run_up']:
                 for mob in self.mobs:
-                    if abs(mob.coordx - self.coordx) <= 20 and 30 >= mob.coordy - self.coordy > 0:
+                    if abs(mob.rect.x - self.rect.x) <= 20 and 30 >= mob.rect.y - self.rect.y > 0:
                         mob.health -= 1
                 self.status = 'attack_up'
                 self.next_status = 'idle_up'
                 self.attack_status = 0
             elif self.status in ['idle_down', 'run_down']:
                 for mob in self.mobs:
-                    if abs(mob.coordx - self.coordx) <= 20 and 30 >= self.coordy - mob.coordy > 0:
+                    if abs(mob.rect.x - self.rect.x) <= 20 and 30 >= self.rect.y - mob.rect.y > 0:
                         mob.health -= 1
                 self.status = 'attack_down'
                 self.next_status = 'idle_down'
@@ -178,42 +174,15 @@ class Player(pygame.sprite.Sprite):
 
     def check_health(self):
         if self.health <= 0:
-            self.game_over_menu()
-
-    def game_over_menu(self):
-        dead = True
-        while dead:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    quit()
-
-            pygame.draw.rect(self.GameManager.screen, (255, 255, 255), (290, 360, 700, 213))
-            pygame.draw.rect(self.GameManager.screen, (184, 188, 163), (290, 360, 700, 213), 8)
-            pygame.draw.rect(self.GameManager.screen, (0, 0, 0), (290, 360, 700, 213), 2)
-            print_text(self.GameManager, 'you dead. game over.', 88, 150, (255, 255, 255), font_size=115)
-            print_text(self.GameManager, 'press SPACE to restart', 308, 380, (0, 0, 0))
-            print_text(self.GameManager, 'or press TAB to quit.', 370, 460, (0, 0, 0))
-
-            keys = pygame.key.get_pressed()
-            if keys[pygame.K_TAB]:
-                pygame.quit()
-                quit()
-            if keys[pygame.K_SPACE]:
-                dead = False
-                self.GameManager.start_menu()
-
-            pygame.display.flip()
+            self.GameManager.game_running = False
 
     def update(self):
-        # self.check_health()
+        self.check_health()
         self.get_input()
         self.get_status()
         self.rect.x += self.direction.x * self.speed
-        self.coordx += self.direction.x * self.speed
         self.collision_wall('horizontal')
         self.rect.y += self.direction.y * self.speed
-        self.coordy += self.direction.y * self.speed
         self.collision_wall('vertical')
         self.collision_item()
         self.collision_mob()
