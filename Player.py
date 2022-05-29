@@ -34,9 +34,11 @@ class Player(pygame.sprite.Sprite):
         self.next_status = 0
         self.coordx = pos[0]
         self.coordy = pos[1]
+        self.GameManager = GameManager
 
         self.obstacle_sprites = obstacle_sprites
         self.GameManager = GameManager
+
 
     def import_assets(self):
         path = './img/'
@@ -166,7 +168,12 @@ class Player(pygame.sprite.Sprite):
                                                                       'attack_down', 'attack_right']:
                 sprite.kill()
 
+    def check_health(self):
+        if self.health == 0:
+            self.GameManager.game_running = False
+
     def update(self):
+        self.check_health()
         self.get_input()
         self.get_status()
         self.rect.x += self.direction.x * self.speed

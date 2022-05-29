@@ -178,3 +178,4 @@ if __name__ == '__main__':
     pygame.init()
     Manager = GameManager()
     Manager.run()
+
