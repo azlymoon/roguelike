@@ -17,13 +17,6 @@ enemy_img = pygame.image.load('./img/enemy.png')
 enemy_img = pygame.transform.scale(enemy_img, (40, 40))
 
 
-class Resource:
-    def __init__(self, name, image_path):
-        self.name = name
-        self.amount = 0
-        self.image = pygame.image.load(image_path)
-
-
 class Item(pygame.sprite.Sprite):
     def __init__(self, pos, name, image_path1, item_sprites):
         pygame.sprite.Sprite.__init__(self)
