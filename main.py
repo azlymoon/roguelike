@@ -44,7 +44,7 @@ class GameManager:
         self.mobs = []
 
     def init_map(self):
-        self.map_obj = Map()
+        self.map_obj = Map(self)
         self.inventory = Inventory(self)
         self.map_obj.create_wall_sprites()
         self.visible_sprites = self.map_obj.visible_sprites

@@ -113,9 +113,10 @@ class Wall(pygame.sprite.Sprite):
 
 
 class Map:  # 38 20
-    def __init__(self, width=38, height=20):
+    def __init__(self, GameManager, width=30, height=20):
         self.width = width
         self.height = height
+        self.GameManager = GameManager
         self.cost_wall = 10
         self.cost_room = 5
         self.cost_room_wall = 15
@@ -305,14 +306,14 @@ class Map:  # 38 20
             spawn_point = variants[random.randint(0, len(variants) - 1)]
             if len(self.spawn_coords) > 0:
                 x1, y1 = spawn_point.pos
-                x1 /= self.tilesize
-                y1 /= self.tilesize
+                # x1 /= self.tilesize
+                # y1 /= self.tilesize
                 flag = True
                 for point in self.spawn_coords:
                     x2, y2 = point
-                    x2 /= self.tilesize
-                    y2 /= self.tilesize
-                    if ((x1 - x2)**2 + (y1 - y2)**2)**(1/2) < self.spawn_dist:
+                    # x2 /= self.tilesize
+                    # y2 /= self.tilesize
+                    if ((x1 - x2)**2 + (y1 - y2)**2)**(1/2) < self.spawn_dist * self.tilesize:
                         flag = False
                 if flag:
                     self.spawn_coords.append(spawn_point.pos)
@@ -327,6 +328,8 @@ class Map:  # 38 20
                 return spawn_point.pos
         else:
             print('Нет точки спавна...')
+            self.GameManager.start_new_lvl()
+
 
     def create_wall_sprites(self):
         for row_index, row in enumerate(self.map):
