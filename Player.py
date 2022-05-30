@@ -26,6 +26,8 @@ class Player(pygame.sprite.Sprite):
         self.health = 100
         self.weapon = 100
         self.armour = 100
+        self.coin = 0
+        self.enemy = 0
 
         # player status
         self.status = 'idle_right'
@@ -164,6 +166,8 @@ class Player(pygame.sprite.Sprite):
                 elif item.name in self.GameManager.items['resource']:
                     if item.name == 'coke':
                         self.health += 50
+                    if item.name == 'coin':
+                        self.coin += 1
                 item.kill()
 
     def collision_mob(self):

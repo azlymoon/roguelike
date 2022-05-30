@@ -10,6 +10,12 @@ weapon_img = pygame.transform.scale(weapon_img, (40, 40))
 armour_img = pygame.image.load('./img/menu/armour.png')
 armour_img = pygame.transform.scale(armour_img, (34, 34))
 
+coin_img = pygame.image.load('./img/coin.png')
+coin_img = pygame.transform.scale(coin_img, (34, 34))
+
+enemy_img = pygame.image.load('./img/enemy.png')
+enemy_img = pygame.transform.scale(enemy_img, (40, 40))
+
 
 class Resource:
     def __init__(self, name, image_path):
@@ -41,7 +47,9 @@ class Inventory:
         self.end_cell1 = 0
         self.GameManager = GameManager
         self.weapon_buf = False
-        self.armour_buf = False
+        self.shield_buf = False
+        self.helmet_buf = False
+        self.chest_buf = False
 
     def draw_whole_items(self, GameManager):
         x = 655
@@ -116,32 +124,22 @@ class Inventory:
                     self.end_cell = x * 3 + y
                     print("End " + str(x * 3 + y))
                     self.swap_cells()
-                    # for item in self.GameManager.item_sprites:
-                    #     if item.name in self.GameManager.items['item']:
-                    #         if item.name in ['axe', 'sword'] and self.end_cell == 9:
-                    #             self.swap_cells()
-                    #             self.change_weapon()
-                    print(self.whole_inventory_for_items[self.start_cell])
-                    if self.whole_inventory_for_items[self.end_cell] is not None:
-                        print(self.whole_inventory_for_items[self.end_cell].name)
-                    # if self.whole_inventory_for_items[self.start_cell] is not None:
-                    #     if self.whole_inventory_for_items[self.start_cell].name in ['axe', 'sword'] and self.end_cell == 9:
-                    #         self.swap_cells()
-                    #         self.change_weapon()
                     if self.end_cell == 9 or self.start_cell == 9:
                         self.change_weapon()
 
+                    if self.end_cell == 11 or self.start_cell == 11:
+                        self.change_armour()
+
+                    if self.end_cell == 6 or self.start_cell == 6:
+                        self.change_armour()
+
+                    if self.end_cell == 7 or self.start_cell == 7:
+                        self.change_armour()
                     return
 
     def swap_cells(self):
-        # temp = self.whole_inventory_for_items[self.end_cell]
-        # self.whole_inventory_for_items[self.end_cell] = self.whole_inventory_for_items[self.start_cell]
-        # self.whole_inventory_for_items[self.start_cell] = temp
-
         self.whole_inventory_for_items[self.start_cell], self.whole_inventory_for_items[self.end_cell] =\
             self.whole_inventory_for_items[self.end_cell], self.whole_inventory_for_items[self.start_cell]
-
-        # self.change_armour()
 
     def change_weapon(self):
         if self.end_cell == 9:
@@ -161,21 +159,45 @@ class Inventory:
     def change_armour(self):
         if self.end_cell == 11:
             if self.whole_inventory_for_items[11] is not None:
-                self.GameManager.player.armour += 50
-        if self.start_cell == 11:
-            self.GameManager.player.armour -= 50
+                if self.whole_inventory_for_items[11].name == 'shield' and self.shield_buf is False:
+                    self.GameManager.player.armour += 70
+                    self.shield_buf = True
+        if self.start_cell == 11 and self.shield_buf is True:
+            if self.whole_inventory_for_items[11] is not None:
+                if self.whole_inventory_for_items[11].name != 'shield':
+                    self.GameManager.player.armour -= 70
+                    self.shield_buf = False
+            else:
+                self.GameManager.player.armour -= 70
+                self.shield_buf = False
 
         if self.end_cell == 6:
             if self.whole_inventory_for_items[6] is not None:
-                self.GameManager.player.armour += 70
-        if self.start_cell == 6:
-            self.GameManager.player.armour -= 70
+                if self.whole_inventory_for_items[6].name == 'helmet' and self.helmet_buf is False:
+                    self.GameManager.player.armour += 50
+                    self.helmet_buf = True
+        if self.start_cell == 6 and self.helmet_buf is True:
+            if self.whole_inventory_for_items[6] is not None:
+                if self.whole_inventory_for_items[6].name != 'helmet':
+                    self.GameManager.player.armour -= 50
+                    self.helmet_buf = False
+            else:
+                self.GameManager.player.armour -= 50
+                self.helmet_buf = False
 
         if self.end_cell == 7:
             if self.whole_inventory_for_items[7] is not None:
-                self.GameManager.player.armour += 100
-        if self.start_cell == 7:
-            self.GameManager.player.armour -= 100
+                if self.whole_inventory_for_items[7].name == 'chest' and self.chest_buf is False:
+                    self.GameManager.player.armour += 100
+                    self.chest_buf = True
+        if self.start_cell == 7 and self.chest_buf is True:
+            if self.whole_inventory_for_items[7] is not None:
+                if self.whole_inventory_for_items[7].name != 'chest':
+                    self.GameManager.player.armour -= 100
+                    self.chest_buf = False
+            else:
+                self.GameManager.player.armour -= 100
+                self.chest_buf = False
 
     def show_panel(self):
         x = y = 15
@@ -190,4 +212,12 @@ class Inventory:
 
         self.GameManager.screen.blit(armour_img, (x - 3, y + 2 * step - 2))
         print_text(self.GameManager, str(self.GameManager.player.armour), x + step, y - 5 + 2 * step,
+                   (255, 255, 255), font_size=30)
+
+        self.GameManager.screen.blit(coin_img, (x - 3, y + 3 * step - 2))
+        print_text(self.GameManager, str(self.GameManager.player.coin), x + step, y - 5 + 3 * step,
+                   (255, 255, 255), font_size=30)
+
+        self.GameManager.screen.blit(enemy_img, (x - 3, y + 4 * step - 5))
+        print_text(self.GameManager, str(len(self.GameManager.mob_sprites)), x + step, y - 5 + 4 * step,
                    (255, 255, 255), font_size=30)

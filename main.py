@@ -33,7 +33,7 @@ class GameManager:
         self.inventory = None
         self.game_running = False
         self.items = {'item': ['helmet', 'chest', 'shield', 'axe', 'sword'],
-                      'resource': ['coke']}
+                      'resource': ['coke', 'coin']}
         self.state = "menu"
         self.count_mobs = None
         self.map = None
@@ -41,6 +41,7 @@ class GameManager:
         self.visible_sprites = None
         self.obstacle_sprites = None
         self.player = None
+        self.count_coin = None
         self.mobs = []
         self.mobs_dictionary = ["Flying_eye", "Goblin", "Mushroom"]
 
@@ -61,6 +62,7 @@ class GameManager:
         self.visible_sprites.add(self.player)
         # self.count_mobs = random.randint(7, 13)
         self.count_mobs = 1
+        self.count_coin = 5
         self.init_items()
         self.init_mobs()
         self.player.get_mobs(self.mobs)
@@ -90,8 +92,15 @@ class GameManager:
     def init_items(self):
         for key in self.items.keys():
             for item in self.items[key]:
-                self.visible_sprites.add(Item(self.map_obj.get_spawn_coord_in_room(), item, './img/{}.png'.format(item),
-                                              self.item_sprites))
+                if item is not 'coin':
+                    self.visible_sprites.add(
+                        Item(self.map_obj.get_spawn_coord_in_room(), item, './img/{}.png'.format(item),
+                             self.item_sprites))
+                else:
+                    for _ in range(self.count_coin):
+                        self.visible_sprites.add(
+                            Item(self.map_obj.get_spawn_coord_in_room(), item, './img/{}.png'.format(item),
+                                 self.item_sprites))
 
     def start_game(self):
         self.state = 'game_running'
