@@ -124,7 +124,6 @@ class Flying_eye(pygame.sprite.Sprite):
 
     def check_health(self):
         if self.health <= 0:
-            print(self.health)
             self.kill()
 
     def update(self):

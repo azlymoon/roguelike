@@ -173,13 +173,14 @@ class Player(pygame.sprite.Sprite):
                                                                    'attack_down', 'attack_right']:
                 mob.health -= self.weapon
                 mob.check_health()
-                print("жопа")
 
     def collision_projectile(self):
         for projectile in self.GameManager.projectile_sprites:
             if projectile.rect.colliderect(self.rect):
-                if self.armour > 0:
+                if self.armour >= 20:
                     self.armour -= 20
+                elif self.armour > 0:
+                    self.armour -= self.armour
                 else:
                     self.health -= 10
                 projectile.status = 'explode'
@@ -210,7 +211,7 @@ class Player(pygame.sprite.Sprite):
                 quit()
             if keys[pygame.K_SPACE]:
                 dead = False
-                self.GameManager.start_menu()
+                self.GameManager.start_new_lvl()
 
             pygame.display.flip()
 

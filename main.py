@@ -35,14 +35,12 @@ class GameManager:
         self.items = {'item': ['helmet', 'chest', 'shield', 'axe', 'sword'],
                       'resource': ['coke']}
         self.state = "menu"
+        self.count_mobs = None
         self.map = None
         self.map_obj = None
         self.visible_sprites = None
         self.obstacle_sprites = None
         self.player = None
-        self.mob1 = None
-        self.mob2 = None
-        self.mob3 = None
         self.mobs = []
         self.mobs_dictionary = ["Flying_eye", "Goblin", "Mushroom"]
 
@@ -56,13 +54,13 @@ class GameManager:
         self.player = Player(self.map_obj.get_spawn_coord_in_room(), self.map_obj.obstacle_sprites, self)
 
         self.visible_sprites.add(self.player)
-
+        self.count_mobs = random.randint(7, 13)
         self.init_items()
         self.init_mobs()
         self.player.get_mobs(self.mobs)
 
     def init_mobs(self):
-        for i in range(1):
+        for i in range(self.count_mobs):
             name = random.choice(self.mobs_dictionary)
             if name == "Flying_eye":
                 mob = Flying_eye(self.map_obj.get_spawn_coord_in_room(), self.player,

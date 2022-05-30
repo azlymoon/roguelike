@@ -26,7 +26,7 @@ class Button:
         else:
             pygame.draw.rect(GameManager.screen, self.inactive_clr, (x, y, self.width, self.height))
 
-        print_text(GameManager, message=message, x=x+20, y=y+5, font_color=(0, 0, 0), font_size=font_size)
+        print_text(GameManager, message=message, x=x + 20, y=y + 5, font_color=(0, 0, 0), font_size=font_size)
 
 
 def show_menu(GameManager):
