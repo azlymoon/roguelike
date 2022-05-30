@@ -44,6 +44,11 @@ class GameManager:
         self.mobs = []
         self.mobs_dictionary = ["Flying_eye", "Goblin", "Mushroom"]
 
+        self.file = './music/1.mp3'
+        self.music_menu = './music/2.mp3'
+        pygame.mixer.init()
+        pygame.mixer.music.load(self.music_menu)
+
     def init_map(self):
         self.map_obj = Map(self)
         self.inventory = Inventory(self)
@@ -101,13 +106,22 @@ class GameManager:
 
     def run(self):
         if self.state == 'menu':
+            pygame.mixer.music.stop()
+            pygame.mixer.music.unload()
+            pygame.mixer.music.load(self.music_menu)
+            pygame.mixer.music.play(-1)
             self.init_map()
             show_menu(self)
         elif self.state == 'new_lvl':
+            pygame.mixer.music.stop()
             self.init_map()
             self.state = 'game_running'
             self.run()
         elif self.state == 'game_running':
+            pygame.mixer.music.stop()
+            pygame.mixer.music.unload()
+            pygame.mixer.music.load(self.file)
+            pygame.mixer.music.play(-1)
             print('-' * 150)
             for y in range(len(self.map)):
                 for x in range(len(self.map[0])):
