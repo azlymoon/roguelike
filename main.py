@@ -110,7 +110,6 @@ class GameManager:
             pygame.mixer.music.unload()
             pygame.mixer.music.load(self.music_menu)
             pygame.mixer.music.play(-1)
-            self.init_map()
             show_menu(self)
         elif self.state == 'new_lvl':
             pygame.mixer.music.stop()

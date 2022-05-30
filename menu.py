@@ -37,6 +37,7 @@ def show_menu(GameManager):
     quit_btn = Button(350, 110)
 
     show = True
+    flag_map_gen = False
 
     while show:
         for event in pygame.event.get():
@@ -59,6 +60,10 @@ def show_menu(GameManager):
         pygame.display.flip()
         GameManager.clock.tick(30)
 
+        if not flag_map_gen:
+            GameManager.init_map()
+            flag_map_gen = True
+
 
 def print_text(GameManager, message, x, y, font_color, font_type='./img/menu/Empirecrown.ttf', font_size=64):
     font_type = pygame.font.Font(font_type, font_size)
@@ -69,6 +74,7 @@ def print_text(GameManager, message, x, y, font_color, font_type='./img/menu/Emp
 def pause(GameManager):
     paused = True
     while paused:
+        print(1)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -78,11 +84,11 @@ def pause(GameManager):
         pygame.draw.rect(GameManager.screen, (184, 188, 163), (140, 240, 1000, 213), 8)
         pygame.draw.rect(GameManager.screen, (0, 0, 0), (140, 240, 1000, 213), 2)
         print_text(GameManager, 'paused. press ENTER to continue', 166, 260, (0, 0, 0))
-        print_text(GameManager, 'or press SPACE to quit.', 322, 340, (0, 0, 0))
+        print_text(GameManager, 'or press SPACE to quit menu.', 322, 340, (0, 0, 0))
         keys = pygame.key.get_pressed()
         if keys[pygame.K_RETURN]:
             paused = False
         if keys[pygame.K_SPACE]:
-            quit()
+            GameManager.start_menu()
 
         pygame.display.flip()
