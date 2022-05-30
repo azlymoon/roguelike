@@ -1,7 +1,7 @@
 import pygame
 from Player import Player
 from map import Map
-from menu import show_menu, print_text, pause
+from menu import show_menu, pause
 from inventory import Inventory, Item
 from mobs import Flying_eye, Goblin, Mushroom
 
