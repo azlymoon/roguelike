@@ -31,9 +31,6 @@ class Item(pygame.sprite.Sprite):
     def add_to_item_sprites(self):
         self.item_sprites.add(self)
 
-    def update(self):
-        pass
-
 
 class Inventory:
     def __init__(self, GameManager):
