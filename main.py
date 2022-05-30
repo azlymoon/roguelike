@@ -37,7 +37,7 @@ class GameManager:
         self.item_sprites = pygame.sprite.Group()
         self.mob_sprites = pygame.sprite.Group()
         self.projectile_sprites = pygame.sprite.Group()
-        self.inventory = Inventory(self)
+        self.inventory = None
         self.game_running = False
         self.items = {'item': ['helmet', 'chest', 'shield', 'axe', 'sword'],
                       'resource': ['coke']}
@@ -54,6 +54,7 @@ class GameManager:
 
     def init_map(self):
         self.map_obj = Map()
+        self.inventory = Inventory(self)
         self.map_obj.create_wall_sprites()
         self.visible_sprites = self.map_obj.visible_sprites
         self.map = self.map_obj.get_map()
@@ -96,10 +97,18 @@ class GameManager:
         # self.state = 'game_running'
         self.run()
 
+    def start_new_lvl(self):
+        self.state = 'new_lvl'
+        self.run()
+
     def run(self):
         if self.state == 'menu':
             self.init_map()
             show_menu(self)
+        elif self.state == 'new_lvl':
+            self.init_map()
+            self.state = 'game_running'
+            self.run()
         elif self.state == 'game_running':
             # РћС‚СЂРёСЃРѕРІРєР° РєР°СЂС‚С‹ РІ РєРѕРЅСЃРѕР»СЊ
             print('-' * 150)
@@ -134,7 +143,7 @@ class GameManager:
                             else:
                                 mob.projectile.kill()
                 if not self.mobs:
-                    self.game_running = False
+                    self.start_new_lvl()
                 keys = pygame.key.get_pressed()
                 if keys[pygame.K_ESCAPE]:
                     pause(self)

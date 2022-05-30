@@ -1,5 +1,6 @@
 import pygame
 from support import import_folder
+from menu import print_text, show_menu
 
 WIDTH = 32
 HEIGHT = 32
@@ -65,11 +66,27 @@ class Player(pygame.sprite.Sprite):
                 self.attack_status = 0
                 if keys[pygame.K_RIGHT]:
                     self.direction.x = 1
+                    self.direction.y = 0
                 if keys[pygame.K_LEFT]:
                     self.direction.x = -1
+                    self.direction.y = 0
                 if keys[pygame.K_UP]:
                     self.direction.y = -1
+                    self.direction.x = 0
                 if keys[pygame.K_DOWN]:
+                    self.direction.y = 1
+                    self.direction.x = 0
+                if keys[pygame.K_RIGHT] and keys[pygame.K_UP]:
+                    self.direction.x = 1
+                    self.direction.y = -1
+                if keys[pygame.K_RIGHT] and keys[pygame.K_DOWN]:
+                    self.direction.x = 1
+                    self.direction.y = 1
+                if keys[pygame.K_LEFT] and keys[pygame.K_UP]:
+                    self.direction.x = -1
+                    self.direction.y = -1
+                if keys[pygame.K_LEFT] and keys[pygame.K_DOWN]:
+                    self.direction.x = -1
                     self.direction.y = 1
                 if keys[pygame.K_2]:
                     self.health -= 1
@@ -178,7 +195,32 @@ class Player(pygame.sprite.Sprite):
 
     def check_health(self):
         if self.health <= 0:
-            self.GameManager.game_running = False
+            self.game_over_menu()
+
+    def game_over_menu(self):
+        dead = True
+        while dead:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    quit()
+
+            pygame.draw.rect(self.GameManager.screen, (255, 255, 255), (290, 360, 700, 213))
+            pygame.draw.rect(self.GameManager.screen, (184, 188, 163), (290, 360, 700, 213), 8)
+            pygame.draw.rect(self.GameManager.screen, (0, 0, 0), (290, 360, 700, 213), 2)
+            print_text(self.GameManager, 'you dead. game over.', 88, 150, (255, 255, 255), font_size=115)
+            print_text(self.GameManager, 'press SPACE to restart', 308, 380, (0, 0, 0))
+            print_text(self.GameManager, 'or press TAB to quit.', 370, 460, (0, 0, 0))
+
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_TAB]:
+                pygame.quit()
+                quit()
+            if keys[pygame.K_SPACE]:
+                dead = False
+                self.GameManager.start_menu()
+
+            pygame.display.flip()
 
     def update(self):
         self.check_health()
