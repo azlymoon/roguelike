@@ -43,6 +43,8 @@ class Inventory:
         self.start_cell1 = 0
         self.end_cell1 = 0
         self.GameManager = GameManager
+        self.weapon_buf = False
+        self.armour_buf = False
 
     def draw_whole_items(self, GameManager):
         x = 655
@@ -117,21 +119,47 @@ class Inventory:
                     self.end_cell = x * 3 + y
                     print("End " + str(x * 3 + y))
                     self.swap_cells()
+                    # for item in self.GameManager.item_sprites:
+                    #     if item.name in self.GameManager.items['item']:
+                    #         if item.name in ['axe', 'sword'] and self.end_cell == 9:
+                    #             self.swap_cells()
+                    #             self.change_weapon()
+                    print(self.whole_inventory_for_items[self.start_cell])
+                    if self.whole_inventory_for_items[self.end_cell] is not None:
+                        print(self.whole_inventory_for_items[self.end_cell].name)
+                    # if self.whole_inventory_for_items[self.start_cell] is not None:
+                    #     if self.whole_inventory_for_items[self.start_cell].name in ['axe', 'sword'] and self.end_cell == 9:
+                    #         self.swap_cells()
+                    #         self.change_weapon()
+                    if self.end_cell == 9 or self.start_cell == 9:
+                        self.change_weapon()
+
                     return
 
     def swap_cells(self):
-        temp = self.whole_inventory_for_items[self.end_cell]
-        self.whole_inventory_for_items[self.end_cell] = self.whole_inventory_for_items[self.start_cell]
-        self.whole_inventory_for_items[self.start_cell] = temp
-        self.change_weapon()
-        self.change_armour()
+        # temp = self.whole_inventory_for_items[self.end_cell]
+        # self.whole_inventory_for_items[self.end_cell] = self.whole_inventory_for_items[self.start_cell]
+        # self.whole_inventory_for_items[self.start_cell] = temp
+
+        self.whole_inventory_for_items[self.start_cell], self.whole_inventory_for_items[self.end_cell] =\
+            self.whole_inventory_for_items[self.end_cell], self.whole_inventory_for_items[self.start_cell]
+
+        # self.change_armour()
 
     def change_weapon(self):
         if self.end_cell == 9:
             if self.whole_inventory_for_items[9] is not None:
-                self.GameManager.player.weapon += 80
-        if self.start_cell == 9:
-            self.GameManager.player.weapon -= 80
+                if self.whole_inventory_for_items[9].name in ['axe', 'sword'] and self.weapon_buf is False:
+                    self.GameManager.player.weapon += 80
+                    self.weapon_buf = True
+        if self.start_cell == 9 and self.weapon_buf is True:
+            if self.whole_inventory_for_items[9] is not None:
+                if self.whole_inventory_for_items[9].name not in ['axe', 'sword']:
+                    self.GameManager.player.weapon -= 80
+                    self.weapon_buf = False
+            else:
+                self.GameManager.player.weapon -= 80
+                self.weapon_buf = False
 
     def change_armour(self):
         if self.end_cell == 11:

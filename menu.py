@@ -74,7 +74,6 @@ def print_text(GameManager, message, x, y, font_color, font_type='./img/menu/Emp
 def pause(GameManager):
     paused = True
     while paused:
-        print(1)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
