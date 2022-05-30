@@ -45,7 +45,7 @@ class Flying_eye(pygame.sprite.Sprite):
     def animate(self):
         if self.status != '':
             animation = self.animations[self.status]
-            self.frame_index += 0.15
+            self.frame_index += 0.3
             if self.frame_index >= len(animation):
                 self.frame_index = 0
             self.image = animation[int(self.frame_index)]
