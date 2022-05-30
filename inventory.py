@@ -24,7 +24,6 @@ class Item(pygame.sprite.Sprite):
         self.name = name
         self.pos = pos
         self.image = pygame.image.load(image_path1)
-        # self.image = pygame.transform.scale(self.image, (40, 40))
         self.rect = self.image.get_rect(topleft=pos)
         self.item_sprites = item_sprites
         self.add_to_item_sprites()
@@ -38,77 +37,12 @@ class Item(pygame.sprite.Sprite):
 
 class Inventory:
     def __init__(self, GameManager):
-        # self.resources = {
-        #     'coke': Resource('coke', './img/coke.png')
-        # }
-        # self.items = {
-        #     'helmet': Item('helmet', './img/helmet.png'),
-        #     'chest': Item('chest', './img/chest.png'),
-        #     'shield': Item('shield', './img/shield.png'),
-        #     'axe': Item('axe', './img/axe.png'),
-        #     'sword': Item('sword', './img/sword.png')
-        # }
-
-        # self.inventory_panel = [None] * 3
-        # self.whole_inventory = [None] * 4
         self.whole_inventory_for_items = [None] * 12
         self.start_cell = 0
         self.end_cell = 0
         self.start_cell1 = 0
         self.end_cell1 = 0
         self.GameManager = GameManager
-
-    # def get_amount(self, name):
-    #     try:
-    #         return self.resources[name].amount
-    #     except KeyError:
-    #         return -1
-
-    # def increase(self, name):
-    #     # self.resources[name].amount += 1
-    #     # print(self.resources[name].amount)
-    #     # self.update_whole()
-    #     if self.resources[name] not in self.whole_inventory:
-    #         self.whole_inventory[self.whole_inventory.index(None)] = self.resources[name]
-    #     self.resources[name].amount += 1
-    #     # print(self.resources[name].amount)
-
-    # def increase_item(self, name1):
-    # self.resources[name].amount += 1
-    # print(self.resources[name].amount)
-    # self.update_whole()
-    # if self.items[name1] not in self.whole_inventory_for_items:
-    #     self.whole_inventory_for_items[self.whole_inventory_for_items.index(None)] = self.items[name1]
-
-    # def update_whole(self):
-    #     for name, resource in self.resources.items():
-    #         if resource.amount != 0 and resource not in self.whole_inventory:
-    #             # self.whole_inventory.insert(self.whole_inventory.index(None), resource)
-    #             print(resource.amount)
-    #             self.whole_inventory[self.whole_inventory.index(None)] = resource
-    #             # self.whole_inventory.remove(None)
-    #         # print(self.resources[name].amount)
-    #     # print()
-
-    # def draw_whole(self, GameManager):
-    #     x = 655
-    #     y = 515
-    #     side = 60
-    #     step = 75
-    #
-    #     # отрисовка основного инвентаря на 4 ячейки
-    #     pygame.draw.rect(GameManager.screen, (175, 190, 202), (640, 500, 315, 100))
-    #     pygame.draw.rect(GameManager.screen, (255, 255, 255), (640, 500, 315, 100), 8)
-    #     pygame.draw.rect(GameManager.screen, (0, 0, 0), (640, 500, 315, 100), 2)
-    #
-    #     for cell in self.whole_inventory:
-    #         # print(cell.amount)
-    #         pygame.draw.rect(GameManager.screen, (200, 215, 227), (x, y, side, side))
-    #         if cell is not None:
-    #             GameManager.screen.blit(cell.image, (x + 5, y + 5))
-    #             print_text(GameManager, str(cell.amount), x + 27, y + 60, (0, 0, 0), font_size=18)
-    #
-    #         x += step
 
     def draw_whole_items(self, GameManager):
         x = 655
@@ -152,8 +86,6 @@ class Inventory:
         # отрисовка текста для щита
         print_text(GameManager, "shield", 913, 379, (0, 0, 0), font_size=18)
 
-    # def draw_whole_armour(self, GameManager):
-
     def set_start_cell(self, mouse_x, mouse_y):
         start_x = 655
         start_y = 255
@@ -169,8 +101,6 @@ class Inventory:
                     self.start_cell = x * 3 + y
                     print("Start " + str(x * 3 + y))
                     return
-                # print("Cell #{0} is ({1}, {2})".format(y * 4 + x, x, y))
-                # print("x: [{0}, {1}], y: [{2}, {3}]".format(cell_x, cell_x + side, cell_y, cell_y + side))
 
     def set_end_cell(self, mouse_x, mouse_y):
         start_x = 655
@@ -225,9 +155,6 @@ class Inventory:
     def show_panel(self):
         x = y = 15
         step = 45
-        # pygame.draw.rect(GameManager.screen, (255, 255, 255), (10, 10, 235, 85))
-        # pygame.draw.rect(GameManager.screen, (184, 188, 163), (10, 10, 235, 85), 8)
-        # pygame.draw.rect(GameManager.screen, (0, 0, 0), (10, 10, 235, 85), 2)
         self.GameManager.screen.blit(health_img, (x - 2, y - 2))
         print_text(self.GameManager, str(self.GameManager.player.health), x + step, y - 5, (255, 255, 255),
                    font_size=30)

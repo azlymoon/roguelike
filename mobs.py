@@ -3,7 +3,7 @@ import math
 import pygame
 from support import import_folder
 from projectile import Flying_eye_projectile, Goblin_projectile, Mushroom_projectile
-from math import sqrt, floor
+from math import sqrt
 import random
 
 
@@ -27,16 +27,11 @@ class Flying_eye(pygame.sprite.Sprite):
         self.speed = 6
         self.health = 1000
 
-
         # mob status
         self.status = 'idle_right'
         self.attack_status = 0
         self.next_status = 0
-        # self.projectile = Flying_eye_projectile(pos=pos, player=player,
-        # target_coords=(self.player.coordx, self.player.coordy))
         self.projectile = None
-
-        # self.projectile.status = 'ex'
         self.obstacle_sprites = obstacle_sprites
         self.move_time = 30
 
@@ -63,19 +58,9 @@ class Flying_eye(pygame.sprite.Sprite):
             self.move_time = 1
         else:
             print(self.move_time)
-            # self.direction.x = 0
-            # self.direction.y = 0
             self.move_time += 1
 
     def get_status(self):
-        # print(self.projectile.status)
-        # print(self.frame_index)
-        # if 40 > sqrt(
-        #         (self.coordx - self.player.coordx) ** 2 + (self.coordy - self.player.coordy) ** 2) > 10 and \
-        #         math.floor(self.frame_index) == len(self.animations)-1:
-        # print(self.projectile.status)
-        # print(sqrt(
-        # (self.coordx - self.player.coordx) ** 2 + (self.coordy - self.player.coordy) ** 2))
         if 200 > sqrt((self.rect.x - self.player.rect.x) ** 2 + (self.rect.y - self.rect.y) ** 2) > 40 and \
                 math.floor(self.frame_index) == len(self.animations) - 1:
             if self.projectile is None:
@@ -147,10 +132,8 @@ class Flying_eye(pygame.sprite.Sprite):
             self.kill()
 
     def update(self):
-        # print(self.coordx, self.coordy, self.player.coordx, self.player.coordy)
         self.get_input()
         self.get_status()
-        # print(self.status)
         self.rect.x += self.direction.x * self.speed
         self.collision('horizontal')
         self.rect.y += self.direction.y * self.speed

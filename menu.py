@@ -16,7 +16,6 @@ class Button:
             pygame.draw.rect(GameManager.screen, self.active_clr, (x, y, self.width, self.height))
 
             if click[0] == 1:
-              # pygame.mixer.Sound.play(button_sound)
                 pygame.time.delay(300)
                 if action is not None:
                     if action == quit:
@@ -57,7 +56,6 @@ def show_menu(GameManager):
         pygame.draw.rect(GameManager.screen, (0, 0, 0), (680, 385, 350, 110), 8)
         pygame.draw.rect(GameManager.screen, (255, 255, 255), (680, 385, 350, 110), 2)
 
-        # pygame.GameManager.screen.update()
         pygame.display.flip()
         GameManager.clock.tick(30)
 
@@ -87,5 +85,4 @@ def pause(GameManager):
         if keys[pygame.K_SPACE]:
             quit()
 
-        # pygame.screen.update()
         pygame.display.flip()

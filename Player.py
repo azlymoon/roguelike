@@ -1,6 +1,6 @@
 import pygame
 from support import import_folder
-from menu import print_text, show_menu
+from menu import print_text
 
 WIDTH = 32
 HEIGHT = 32

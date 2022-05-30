@@ -66,7 +66,6 @@ class Wall(pygame.sprite.Sprite):
         self.map = map
         self.wall_type = self.get_wall_type(point, type)
         self.obstacle_sprites = obstacle_sprites
-        # self.wall_type = wall_type
         self.image = pygame.transform.scale(self.get_image(), (70, 70))
         self.rect = self.image.get_rect(topleft=pos)
         self.add_to_obstacle_sprites()
@@ -99,13 +98,10 @@ class Wall(pygame.sprite.Sprite):
                 return 'floor_in_room'
 
     def get_image(self):
-        # print(neighbors(self.map, self.point))
         wall_horizontal_path = './img/map/horizontal.png'
         wall_vertical_path = './img/map/vertical.png'
         floor_path = './img/map/1.png'
         empty_path = './img/map/dark.png'
-        test_path = './img/map/test.png'
-        test2_path = './img/map/test2.png'
         if 'horizontal' in self.wall_type:
             return pygame.image.load(wall_horizontal_path).convert_alpha()
         elif 'floor_near_wall' in self.wall_type or 'floor_in_room' in self.wall_type:
@@ -114,13 +110,10 @@ class Wall(pygame.sprite.Sprite):
             return pygame.image.load(wall_vertical_path).convert_alpha()
         elif 'empty' in self.wall_type:
             return pygame.image.load(empty_path).convert_alpha()
-        # elif 'test' in self.wall_type:
-        #     return pygame.image.load(test_path).convert_alpha()
 
 
 class Map:  # 38 20
     def __init__(self, width=38, height=20):
-    # def __init__(self, width=30, height=20):
         self.width = width
         self.height = height
         self.cost_wall = 10
@@ -267,10 +260,6 @@ class Map:  # 38 20
                     paste_finish = True
                     dist = copy.deepcopy(new_dist)
                     field_dist = copy.deepcopy(new_field_dist)
-
-                    # coords_field_dist = get_field_coord()
-                    # if len(coords_field_dist):
-                    #     create_tunnel(i, j, coords_field_dist)
             return dist, field_dist, lc_field_dist
 
         def recovery_road(came_from, current, road):
@@ -280,7 +269,6 @@ class Map:  # 38 20
             return recovery_road(came_from, road[-1], road)
 
         def create_tunnel(coords_field_dist, lc_field_dist):
-            # coords_field_dist = get_field_coord()
             start = lc_field_dist[random.randint(0, len(lc_field_dist) - 1)]
             goal = coords_field_dist[random.randint(0, len(coords_field_dist) - 1)]
             came_from = a_star_search(dist, start, goal)
@@ -289,9 +277,6 @@ class Map:  # 38 20
                 y, x = coord
                 dist[y][x] = self.cost_room
                 lock_neighbors(y, x)
-                # draw_in_terminal_dist()
-            # draw_in_terminal_dist()
-            # print(road)
 
         dist = init_dist()
         field_dist = []
@@ -308,7 +293,6 @@ class Map:  # 38 20
                 lock_neighbors(coord[0], coord[1])
             if i != 0 and len(lc_field_dist):
                 create_tunnel(coords_field_dist, lc_field_dist)
-        # draw_in_terminal_dist()
         map = [[0] * len(dist[0]) for _ in range(len(dist))]
         for y in range(len(dist)):
             for x in range(len(dist[0])):
@@ -316,13 +300,9 @@ class Map:  # 38 20
         return map
 
     def get_spawn_coord_in_room(self):
-        # variants = [i for i in range(0, len(self.walls) - 1)]
-
         variants = [wall for wall in self.walls if wall.wall_type == 'floor_in_room']
-
         while len(variants) > 0:
             spawn_point = variants[random.randint(0, len(variants) - 1)]
-            # spawn_point = self.walls[rand_spawn]
             if len(self.spawn_coords) > 0:
                 x1, y1 = spawn_point.pos
                 x1 /= self.tilesize
