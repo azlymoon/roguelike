@@ -1,3 +1,5 @@
+import random
+
 import pygame
 from Player import Player
 from map import Map
@@ -42,6 +44,7 @@ class GameManager:
         self.mob2 = None
         self.mob3 = None
         self.mobs = []
+        self.mobs_dictionary = ["Flying_eye", "Goblin", "Mushroom"]
 
     def init_map(self):
         self.map_obj = Map(self)
@@ -51,24 +54,34 @@ class GameManager:
         self.map = self.map_obj.get_map()
         self.obstacle_sprites = self.map_obj.obstacle_sprites
         self.player = Player(self.map_obj.get_spawn_coord_in_room(), self.map_obj.obstacle_sprites, self)
-        self.mob1 = Flying_eye(self.map_obj.get_spawn_coord_in_room(), self.player,
-                               self.map_obj.obstacle_sprites, self)
-        self.mob2 = Goblin(self.map_obj.get_spawn_coord_in_room(), self.player,
-                           self.map_obj.obstacle_sprites, self)
-        self.mob3 = Mushroom(self.map_obj.get_spawn_coord_in_room(), self.player,
-                             self.map_obj.obstacle_sprites, self)
+
         self.visible_sprites.add(self.player)
-        self.visible_sprites.add(self.mob1)
-        self.visible_sprites.add(self.mob2)
-        self.visible_sprites.add(self.mob3)
-        self.mob_sprites.add(self.mob1)
-        self.mob_sprites.add(self.mob2)
-        self.mob_sprites.add(self.mob3)
-        self.mobs.append(self.mob1)
-        self.mobs.append(self.mob2)
-        self.mobs.append(self.mob3)
-        self.player.get_mobs(self.mobs)
+
         self.init_items()
+        self.init_mobs()
+        self.player.get_mobs(self.mobs)
+
+    def init_mobs(self):
+        for i in range(1):
+            name = random.choice(self.mobs_dictionary)
+            if name == "Flying_eye":
+                mob = Flying_eye(self.map_obj.get_spawn_coord_in_room(), self.player,
+                                 self.map_obj.obstacle_sprites, self)
+                self.visible_sprites.add(mob)
+                self.mob_sprites.add(mob)
+                self.mobs.append(mob)
+            elif name == "Goblin":
+                mob = Goblin(self.map_obj.get_spawn_coord_in_room(), self.player,
+                             self.map_obj.obstacle_sprites, self)
+                self.visible_sprites.add(mob)
+                self.mob_sprites.add(mob)
+                self.mobs.append(mob)
+            elif name == "Mushroom":
+                mob = Mushroom(self.map_obj.get_spawn_coord_in_room(), self.player,
+                               self.map_obj.obstacle_sprites, self)
+                self.visible_sprites.add(mob)
+                self.mob_sprites.add(mob)
+                self.mobs.append(mob)
 
     def init_items(self):
         for key in self.items.keys():
@@ -82,7 +95,6 @@ class GameManager:
 
     def start_menu(self):
         self.state = 'menu'
-        # self.state = 'game_running'
         self.run()
 
     def start_new_lvl(self):
@@ -116,13 +128,15 @@ class GameManager:
                 for mob in self.mobs:
                     if mob.health <= 0:
                         self.mobs.remove(mob)
+
                     else:
                         if mob.projectile is not None:
                             if mob.projectile.status != 'explode':
                                 self.visible_sprites.add(mob.projectile)
                             else:
                                 mob.projectile.kill()
-                if not self.mobs:
+                if not self.mob_sprites:
+                    self.mobs.clear()
                     self.start_new_lvl()
                 keys = pygame.key.get_pressed()
                 if keys[pygame.K_ESCAPE]:

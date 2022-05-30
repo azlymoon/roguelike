@@ -11,9 +11,7 @@ class Player(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.animations = {'idle_left': [], 'idle_right': [], 'idle_up': [], 'idle_down': [],
                            'run_left': [], 'run_right': [], 'run_up': [], 'run_down': [],
-                           'attack_left': [], 'attack_right': [], 'attack_up': [], 'attack_down': [],
-
-                           }
+                           'attack_left': [], 'attack_right': [], 'attack_up': [], 'attack_down': []}
 
         self.import_assets()
         self.frame_index = 0
@@ -101,18 +99,22 @@ class Player(pygame.sprite.Sprite):
     def get_status(self):
         if self.attack_status == 1:
             if self.status in ['idle_right', 'run_right']:
+
                 self.status = 'attack_right'
                 self.next_status = 'idle_right'
                 self.attack_status = 0
             elif self.status in ['idle_left', 'run_left']:
+
                 self.status = 'attack_left'
                 self.next_status = 'idle_left'
                 self.attack_status = 0
             elif self.status in ['idle_up', 'run_up']:
+
                 self.status = 'attack_up'
                 self.next_status = 'idle_up'
                 self.attack_status = 0
             elif self.status in ['idle_down', 'run_down']:
+
                 self.status = 'attack_down'
                 self.next_status = 'idle_down'
                 self.attack_status = 0
@@ -165,11 +167,13 @@ class Player(pygame.sprite.Sprite):
                 item.kill()
 
     def collision_mob(self):
+
         for mob in self.GameManager.mob_sprites:
             if mob.rect.colliderect(self.rect) and self.status in ['attack_left', 'attack_up',
                                                                    'attack_down', 'attack_right']:
                 mob.health -= self.weapon
                 mob.check_health()
+                print("жопа")
 
     def collision_projectile(self):
         for projectile in self.GameManager.projectile_sprites:

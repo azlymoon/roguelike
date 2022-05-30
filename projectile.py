@@ -6,9 +6,7 @@ from math import sqrt
 class Flying_eye_projectile(pygame.sprite.Sprite):
     def __init__(self, pos, GameManager):
         pygame.sprite.Sprite.__init__(self)
-        # self.pos = pos
-        self.animations = {'explode': [], 'fly': [],
-                           }
+        self.animations = {'explode': [], 'fly': []}
         self.GameManager = GameManager
         self.import_assets()
         self.frame_index = 0

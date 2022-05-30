@@ -12,9 +12,7 @@ class Flying_eye(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.animations = {'idle_left': [], 'idle_right': [],
                            'run_left': [], 'run_right': [],
-                           'attack_left': [], 'attack_right': []
-
-                           }
+                           'attack_left': [], 'attack_right': []}
         self.GameManager = GameManager
         self.import_assets()
         self.frame_index = 0
@@ -51,13 +49,11 @@ class Flying_eye(pygame.sprite.Sprite):
             self.image = animation[int(self.frame_index)]
 
     def get_input(self):
-        print(self.move_time % 30)
         if self.move_time % 30 == 0:
             self.direction.x = random.randint(-1, 1)
             self.direction.y = random.randint(-1, 1)
             self.move_time = 1
         else:
-            print(self.move_time)
             self.move_time += 1
 
     def get_status(self):
