@@ -101,30 +101,18 @@ class Player(pygame.sprite.Sprite):
     def get_status(self):
         if self.attack_status == 1:
             if self.status in ['idle_right', 'run_right']:
-                for mob in self.mobs:
-                    if 30 >= mob.rect.x - self.rect.x > 0 and abs(mob.rect.y - self.rect.y) <= 20:
-                        mob.health -= 1
                 self.status = 'attack_right'
                 self.next_status = 'idle_right'
                 self.attack_status = 0
             elif self.status in ['idle_left', 'run_left']:
-                for mob in self.mobs:
-                    if 30 >= self.rect.x - mob.rect.x > 0 and abs(mob.rect.y - self.rect.y) <= 20:
-                        mob.health -= 1
                 self.status = 'attack_left'
                 self.next_status = 'idle_left'
                 self.attack_status = 0
             elif self.status in ['idle_up', 'run_up']:
-                for mob in self.mobs:
-                    if abs(mob.rect.x - self.rect.x) <= 20 and 30 >= mob.rect.y - self.rect.y > 0:
-                        mob.health -= 1
                 self.status = 'attack_up'
                 self.next_status = 'idle_up'
                 self.attack_status = 0
             elif self.status in ['idle_down', 'run_down']:
-                for mob in self.mobs:
-                    if abs(mob.rect.x - self.rect.x) <= 20 and 30 >= self.rect.y - mob.rect.y > 0:
-                        mob.health -= 1
                 self.status = 'attack_down'
                 self.next_status = 'idle_down'
                 self.attack_status = 0
