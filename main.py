@@ -26,7 +26,6 @@ class GameManager:
         pygame.display.set_caption("Escape the Castle")
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         self.clock = pygame.time.Clock()
-        self.entities = pygame.sprite.Group()
         self.item_sprites = None
         self.mob_sprites = None
         self.projectile_sprites = None
@@ -63,8 +62,7 @@ class GameManager:
         self.player = Player(self.map_obj.get_spawn_coord_in_room(), self.map_obj.obstacle_sprites, self)
 
         self.visible_sprites.add(self.player)
-        # self.count_mobs = random.randint(7, 13)
-        self.count_mobs = 1
+        self.count_mobs = random.randint(7, 13)
         self.count_coin = 5
         self.init_items()
         self.init_mobs()

@@ -113,7 +113,7 @@ class Wall(pygame.sprite.Sprite):
 
 
 class Map:  # 38 20
-    def __init__(self, GameManager, width=30, height=20):
+    def __init__(self, GameManager, width=50, height=50):
         self.width = width
         self.height = height
         self.GameManager = GameManager

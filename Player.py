@@ -1,6 +1,7 @@
 import pygame
 from support import import_folder
 from menu import print_text
+import sys
 
 WIDTH = 32
 HEIGHT = 32
@@ -212,7 +213,7 @@ class Player(pygame.sprite.Sprite):
             keys = pygame.key.get_pressed()
             if keys[pygame.K_TAB]:
                 pygame.quit()
-                quit()
+                sys.exit()
             if keys[pygame.K_SPACE]:
                 dead = False
                 self.GameManager.start_new_lvl()
