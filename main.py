@@ -92,7 +92,7 @@ class GameManager:
     def init_items(self):
         for key in self.items.keys():
             for item in self.items[key]:
-                if item is not 'coin':
+                if item != 'coin':
                     self.visible_sprites.add(
                         Item(self.map_obj.get_spawn_coord_in_room(), item, './img/{}.png'.format(item),
                              self.item_sprites))

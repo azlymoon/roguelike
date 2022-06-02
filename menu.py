@@ -1,3 +1,5 @@
+import sys
+
 import pygame
 
 
@@ -18,9 +20,9 @@ class Button:
             if click[0] == 1:
                 pygame.time.delay(300)
                 if action is not None:
-                    if action == quit:
+                    if action == 'quit':
                         pygame.quit()
-                        quit()
+                        sys.exit()
                     else:
                         action()
         else:
@@ -43,7 +45,7 @@ def show_menu(GameManager):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-                quit()
+                sys.exit()
 
         GameManager.screen.blit(menu_bckgr, (0, 0))
 
@@ -53,7 +55,7 @@ def show_menu(GameManager):
         start_btn.draw(GameManager, 210, 385, 'start game', GameManager.start_game, 70)
         pygame.draw.rect(GameManager.screen, (0, 0, 0), (210, 385, 390, 110), 8)
         pygame.draw.rect(GameManager.screen, (255, 255, 255), (210, 385, 390, 110), 2)
-        quit_btn.draw(GameManager, 680, 385, 'quit game', quit, 70)
+        quit_btn.draw(GameManager, 680, 385, 'quit game', 'quit', 70)
         pygame.draw.rect(GameManager.screen, (0, 0, 0), (680, 385, 350, 110), 8)
         pygame.draw.rect(GameManager.screen, (255, 255, 255), (680, 385, 350, 110), 2)
 
@@ -77,7 +79,7 @@ def pause(GameManager):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-                quit()
+                sys.exit()
 
         pygame.draw.rect(GameManager.screen, (255, 255, 255), (140, 240, 1000, 213))
         pygame.draw.rect(GameManager.screen, (184, 188, 163), (140, 240, 1000, 213), 8)
