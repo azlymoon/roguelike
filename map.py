@@ -328,7 +328,7 @@ class Map:  # 38 20
                 return spawn_point.pos
         else:
             print('Нет точки спавна')
-            self.GameManager.start_new_lvl()
+            self.GameManager.start_menu()
 
     def create_wall_sprites(self):
         for row_index, row in enumerate(self.map):

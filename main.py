@@ -27,9 +27,9 @@ class GameManager:
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         self.clock = pygame.time.Clock()
         self.entities = pygame.sprite.Group()
-        self.item_sprites = pygame.sprite.Group()
-        self.mob_sprites = pygame.sprite.Group()
-        self.projectile_sprites = pygame.sprite.Group()
+        self.item_sprites = None
+        self.mob_sprites = None
+        self.projectile_sprites = None
         self.inventory = None
         self.game_running = False
         self.items = {'item': ['helmet', 'chest', 'shield', 'axe', 'sword'],
@@ -54,6 +54,9 @@ class GameManager:
         self.map_obj = Map(self)
         self.inventory = Inventory(self)
         self.map_obj.create_wall_sprites()
+        self.item_sprites = pygame.sprite.Group()
+        self.mob_sprites = pygame.sprite.Group()
+        self.projectile_sprites = pygame.sprite.Group()
         self.visible_sprites = self.map_obj.visible_sprites
         self.map = self.map_obj.get_map()
         self.obstacle_sprites = self.map_obj.obstacle_sprites
